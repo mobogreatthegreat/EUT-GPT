@@ -30,6 +30,8 @@ I (@mobogreatthegreat) have been working on EUT-GPT for the past few weeks now a
 # Installing from Source
 ## Prerequisites
 - Python 3.11+ (3.11 recommended)
+> [!NOTE]  
+> Python can be installed from https://www.python.org/downloads/
 
 ## Steps
 1. Download the source code from the Releases tab and extract the folder.
@@ -50,7 +52,8 @@ During installation, the script will first install the Generation model (**DeepS
 
 After the model is done installing, the script will start to compile the wiki into a `.db` file. Both the model (saved as `model.gguf`) and the database file (saved as `WikiDump.db`) are stored in the Cache folder (`%APPDATA%\Local\EUTGPT` on Windows; Linux/MacOS location may vary).
 
-If the script is interrupted, then you will need to go to the Cache folder and clear it (*Automatic Repair Mode Soon*).
+> [!IMPORTANT]  
+> If the script is interrupted, then you will need to go to the Cache folder and clear it (*Automatic Repair Mode Soon*).
 
 # Getting Started
 This section will be separated into 2 sections, one for Chat Mode and one for Train Mode.
