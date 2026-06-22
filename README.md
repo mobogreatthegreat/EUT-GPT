@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/mobogreatthegreat/EUT-GPT-Test-1?include_prereleases&style=flat-square&color=blueviolet"/>
-  <img src="https://img.shields.io/github/issues/mobogreatthegreat/EUT-GPT-Test-1?style=flat-square&color=orange"/>
-  <img src="https://img.shields.io/github/downloads/mobogreatthegreat/EUT-GPT-Test-1/total?style=flat-square&color=brightgreen"/>
+  <img src="https://img.shields.io/github/v/release/mobogreatthegreat/EUT-GPT?include_prereleases&style=flat-square&color=blueviolet"/>
+  <img src="https://img.shields.io/github/issues/mobogreatthegreat/EUT-GPT?style=flat-square&color=orange"/>
+  <img src="https://img.shields.io/github/downloads/mobogreatthegreat/EUT-GPT/total?style=flat-square&color=brightgreen"/>
 </p>
 
 # EUT-GPT Introduction
