@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/MoGameMaker/EUT-GPT-Test-1?include_prereleases&style=for-the-badge"/>
-  <img src="https://img.shields.io/github/issues/MoGameMaker/EUT-GPT-Test-1?style=for-the-badge"/>
-  <img src="https://img.shields.io/github/downloads/MoGameMaker/EUT-GPT-Test-1/total?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/v/release/mobogreatthegreat/EUT-GPT-Test-1?include_prereleases&style=flat-square&color=blueviolet"/>
+  <img src="https://img.shields.io/github/issues/mobogreatthegreat/EUT-GPT-Test-1?style=flat-square&color=orange"/>
+  <img src="https://img.shields.io/github/downloads/mobogreatthegreat/EUT-GPT-Test-1/total?style=flat-square&color=brightgreen"/>
 </p>
 
 # EUT-GPT Introduction
