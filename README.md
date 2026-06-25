@@ -3,18 +3,13 @@
     <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square&logo=python&logoColor=white&labelColor=1a1a2e">
     <img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square&logo=python">
   </picture>
-  <img src="https://img.shields.io/badge/node-18%2B-green?style=flat-square&logo=node.js&logoColor=white&labelColor=1a1a2e"/>
-  <img src="https://img.shields.io/badge/platform-win%20%7C%20mac%20%7C%20linux-lightgrey?style=flat-square&labelColor=1a1a2e"/>
-  <img src="https://img.shields.io/badge/license-MIT-blueviolet?style=flat-square&labelColor=1a1a2e"/>
-  <img src="https://img.shields.io/badge/opencode-1.0.0-5eead4?style=flat-square&labelColor=1a1a2e"/>
-  <img src="https://img.shields.io/badge/version-0.0.6-blueviolet?style=flat-square&labelColor=1a1a2e"/>
+  <img src="https://img.shields.io/badge/platform-win%20%7C%20mac%20%7C%20linux-purple?style=flat-square&labelColor=1a1a2e"/>
 </p>
 
 <h1 align="center">EUT-GPT Launcher</h1>
 <p align="center">
   <em>A desktop interface and CLI for AI conversations powered by OpenCode, themed around the Everything Upgrade Tree wiki.</em>
   <br>
-  <strong>Answers are restricted to <a href="https://eutwiki.com">eutwiki.com</a> content only.</strong>
 </p>
 
 <p align="center">
@@ -68,7 +63,7 @@
 EUT-GPT Launcher is **two things in one**:
 
 1. **A Python CLI** (`eutgpt_cli.py`) that connects to the [OpenCode](https://opencode.ai) server API for streaming AI conversations with model selection, reasoning-effort control, agent selection, and session management.
-2. **An Electron desktop GUI** that wraps the CLI and provides a modern chat interface with a custom frameless title bar, **19 baseplate-themed color schemes** (named after EUT wiki baseplates), collapsible reasoning blocks, and ephemeral temp chats.
+2. **An Electron desktop GUI** that wraps the CLI and provides a modern chat interface with a custom frameless title bar, **12 baseplate-themed color schemes** (named after EUT baseplates), collapsible reasoning blocks, and ephemeral temp chats.
 
 Both interface with the same `opencode serve` back-end, which is **auto-installed and managed by the launcher** on first launch.
 
@@ -84,14 +79,13 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | **Streaming responses** | Real-time SSE-based message streaming with typing indicators |
 | **Model switching** | Select provider/model/variant from the composer toolbar |
 | **Reasoning effort** | Set thinking complexity (none/minimal/low/medium/high/xhigh/max) tied to model variants |
-| **19 baseplate themes** | Color schemes named after every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
+| **12 baseplate themes** | Color schemes named after (almost) every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
 | **Session management** | Rename by double-clicking, search, auto-naming from first message |
 | **Temp (ephemeral) chats** | Toggle in sidebar - auto-deleted when you switch away |
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
 | **Custom frameless UI** | Clean opencode-inspired design with centered timeline |
 | **CLI with full command set** | `/rename`, `/export`, `/history`, model/agent/reasoning controls |
 | **Cross-platform builds** | Portable `.exe` (Windows), AppImage (Linux), DMG (macOS) |
-| **Auto-install** | OpenCode installed via official installer on first launch |
 
 ---
 
@@ -129,7 +123,7 @@ eutgpt-app/
 │   ├── node_modules/          # Installed via npm install
 │   ├── renderer/
 │   │   ├── index.html         # OpenCode-inspired UI
-│   │   ├── style.css          # 19-theme CSS variable system
+│   │   ├── style.css          # 12-theme CSS variable system
 │   │   └── app.js             # Frontend logic
 │   └── renderer-old/          # Original UI backup
 ├── dist/                      # Build output (generated)
@@ -284,7 +278,7 @@ Edit this constant and rebuild the CLI to change the default system prompt. The 
 
 ### Themes
 
-19 themes are available, each named after a baseplate on the [EUT Wiki](https://eutwiki.com/Category:Baseplates). Theme colors are drawn from each baseplate's currency template:
+12 themes are available, each named after a baseplate on the [EUT Wiki](https://eutwiki.com/Category:Baseplates). Theme colors are drawn from each baseplate's currency template:
 
 | Theme | Baseplate | Currency | Accent Color |
 |-------|-----------|----------|-------------|
