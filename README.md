@@ -11,7 +11,6 @@
 <p align="center">
   <em>A desktop interface and CLI for AI conversations powered by OpenCode, themed around the Everything Upgrade Tree wiki.</em>
   <br>
-  <strong>Answers are restricted to <a href="https://eutwiki.com">eutwiki.com</a> content only.</strong>
 </p>
 
 <p align="center">
@@ -80,14 +79,13 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | **Streaming responses** | Real-time SSE-based message streaming with typing indicators |
 | **Model switching** | Select provider/model/variant from the composer toolbar |
 | **Reasoning effort** | Set thinking complexity (none/minimal/low/medium/high/xhigh/max) tied to model variants |
-| **12 baseplate themes** | Color schemes named after every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
+| **12 baseplate themes** | Color schemes named after (almost) every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
 | **Session management** | Rename by double-clicking, search, auto-naming from first message |
 | **Temp (ephemeral) chats** | Toggle in sidebar - auto-deleted when you switch away |
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
 | **Custom frameless UI** | Clean opencode-inspired design with centered timeline |
 | **CLI with full command set** | `/rename`, `/export`, `/history`, model/agent/reasoning controls |
 | **Cross-platform builds** | Portable `.exe` (Windows), AppImage (Linux), DMG (macOS) |
-| **Auto-install** | OpenCode installed via official installer on first launch |
 
 ---
 
