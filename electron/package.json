@@ -1,0 +1,59 @@
+{
+  "name": "eutgpt-launcher",
+  "version": "1.0.0",
+  "description": "EUT-GPT Launcher — Desktop UI for EUT-GPT AI",
+  "author": "EUT-GPT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "node -e \"const p=require('os').platform();require('child_process').execSync('npx electron-builder --'+(p==='win32'?'win portable':p==='darwin'?'mac dmg':'linux AppImage'),{stdio:'inherit'})\""
+  },
+  "build": {
+    "appId": "ai.eutgpt.launcher",
+    "productName": "EUT-GPT Launcher",
+    "directories": {
+      "output": "../dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*"
+    ],
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "win": {
+      "extraResources": [
+        { "from": "../dist/eutgpt-cli.exe", "to": "bin/eutgpt-cli.exe" }
+      ],
+      "target": ["portable"],
+      "icon": "icon.png",
+      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "certificateFile": "../cert.pfx",
+      "certificatePassword": "eutgpt",
+      "signAndEditExecutable": false
+    },
+    "mac": {
+      "extraResources": [
+        { "from": "../dist/eutgpt-cli", "to": "bin/eutgpt-cli" }
+      ],
+      "target": ["dmg"],
+      "icon": "icon.png",
+      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "extraResources": [
+        { "from": "../dist/eutgpt-cli", "to": "bin/eutgpt-cli" }
+      ],
+      "target": ["AppImage"],
+      "icon": "icon.png",
+      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "category": "Utility"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

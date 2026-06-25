@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="astronomy" data-color-scheme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EUT-GPT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Titlebar -->
+  <header id="titlebar">
+    <div class="titlebar-drag">
+      <div class="titlebar-left">
+        <span class="titlebar-logo">◆</span>
+        <span class="titlebar-name">EUT-GPT</span>
+      </div>
+      <div class="titlebar-center" id="titlebar-center">
+        <div class="status-badge" id="status-badge">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Ready</span>
+        </div>
+      </div>
+      <div class="titlebar-right">
+        <span class="titlebar-icon-btn" id="tb-minimize" title="Minimize">─</span>
+        <span class="titlebar-icon-btn" id="tb-maximize" title="Maximize">□</span>
+        <span class="titlebar-icon-btn titlebar-close" id="tb-close" title="Close">✕</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="app">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-search">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="session-search" placeholder="Search sessions..." />
+      </div>
+      <div id="session-list"></div>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-row">
+          <button id="new-chat-btn" class="btn-new-chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Chat
+          </button>
+          <label class="toggle-wrap" title="Ephemeral chat">
+            <input type="checkbox" id="temp-toggle-input" />
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div class="sidebar-footer-row">
+          <button id="settings-btn" class="btn-sidebar-foot">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main id="main">
+      <div id="messages-container">
+        <div class="welcome" id="welcome-screen">
+          <div class="welcome-icon">◆</div>
+          <h1>EUT-GPT</h1>
+          <p style="min-width: fit-content;">Your AI assistant powered by OpenCode for anything about EUT.</p>
+          <div class="welcome-hints">
+            <span class="hint"><kbd>Ctrl + N</kbd> New chat</span>
+            <span class="hint"><kbd>Ctrl + K</kbd> Search</span>
+            <span class="hint"><kbd>Ctrl + ,</kbd> Settings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <footer id="composer">
+        <div class="composer-bar" id="composer-bar">
+          <div class="composer-model-row">
+            <div class="custom-select composer-select" id="chat-model-select-wrap">
+              <button class="select-trigger" data-select="chat-model">
+                <span class="trigger-value">Select model</span>
+                <span class="trigger-arrow">▾</span>
+              </button>
+              <div class="select-dropdown">
+                <div class="dropdown-search"><input type="text" class="dropdown-filter" placeholder="Search..." /></div>
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+            <div class="custom-select composer-select" id="chat-variant-select-wrap">
+              <button class="select-trigger" data-select="chat-variant">
+                <span class="trigger-value">No variant</span>
+                <span class="trigger-arrow">▾</span>
+              </button>
+              <div class="select-dropdown">
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+            <div class="custom-select composer-select" id="chat-reasoning-select-wrap">
+              <button class="select-trigger" data-select="chat-reasoning">
+                <span class="trigger-value">Effort</span>
+                <span class="trigger-arrow">▾</span>
+              </button>
+              <div class="select-dropdown">
+                <div class="dropdown-options"></div>
+              </div>
+            </div>
+          </div>
+          <div class="composer-input-row">
+            <div class="composer-input-wrap">
+              <textarea id="chat-input" rows="1" placeholder="Ask anything..." autofocus></textarea>
+            </div>
+            <button id="send-btn" class="btn-send" title="Send">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settings-overlay" class="overlay" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="modal-close" id="close-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-section">
+          <label>Temperature <span class="setting-value" id="temp-value">0.7</span></label>
+          <div class="range-wrap">
+            <input type="range" id="settings-temp" min="0" max="2" step="0.1" value="0.7">
+            <div class="range-fill" id="range-fill"></div>
+          </div>
+        </div>
+        <div class="setting-section">
+          <label>Server URL</label>
+          <input type="text" id="settings-url" value="http://127.0.0.1:4096" class="setting-input" />
+        </div>
+        <div class="setting-section">
+          <label>Theme</label>
+          <div class="theme-grid" id="theme-grid">
+            <button class="theme-swatch" data-theme="astronomy" title="Astronomy" style="--swatch:#050a14;--accent:#38bdf8">✦</button>
+            <button class="theme-swatch" data-theme="automation" title="Automation" style="--swatch:#080e14;--accent:#48cae4">✦</button>
+            <button class="theme-swatch" data-theme="beta" title="Beta" style="--swatch:#14100a;--accent:#eab308">✦</button>
+            <button class="theme-swatch" data-theme="bonus" title="Bonus" style="--swatch:#0a140e;--accent:#4ade80">✦</button>
+            <button class="theme-swatch" data-theme="chips" title="Chips Basement" style="--swatch:#0a0808;--accent:#dc2626">✦</button>
+            <button class="theme-swatch" data-theme="donation" title="Donation" style="--swatch:#14100a;--accent:#f59e0b">✦</button>
+            <button class="theme-swatch" data-theme="hardcore" title="Hardcore" style="--swatch:#140a0a;--accent:#ef4444">✦</button>
+            <button class="theme-swatch" data-theme="leaderboard" title="Leaderboard" style="--swatch:#0f0c08;--accent:#fbbf24">✦</button>
+            <button class="theme-swatch" data-theme="lingo" title="Lingo" style="--swatch:#0a1412;--accent:#2dd4bf">✦</button>
+            <button class="theme-swatch" data-theme="mining" title="Mining" style="--swatch:#0e0c0a;--accent:#eab308">✦</button>
+            <button class="theme-swatch" data-theme="offline" title="Offline" style="--swatch:#0c0c0e;--accent:#6b7280">✦</button>
+            <button class="theme-swatch" data-theme="pointx" title="Point-X" style="--swatch:#0d0a1a;--accent:#7c3aed">✦</button>
+            <button class="theme-swatch" data-theme="pointx-basement" title="Point-X Basement" style="--swatch:#0e0a14;--accent:#a855f7">✦</button>
+            <button class="theme-swatch" data-theme="points" title="Points" style="--swatch:#0f0c08;--accent:#f59e0b">✦</button>
+            <button class="theme-swatch" data-theme="points-basement" title="Points Basement" style="--swatch:#120c08;--accent:#d97706">✦</button>
+            <button class="theme-swatch" data-theme="prestige" title="Prestige" style="--swatch:#0d0a14;--accent:#c084fc">✦</button>
+            <button class="theme-swatch" data-theme="qubits" title="Qubits" style="--swatch:#080e14;--accent:#06b6d4">✦</button>
+            <button class="theme-swatch" data-theme="sacrifice" title="Sacrifice" style="--swatch:#140808;--accent:#dc2626">✦</button>
+            <button class="theme-swatch" data-theme="transcend" title="Transcend" style="--swatch:#0a0e1a;--accent:#818cf8">✦</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="cancel-settings">Cancel</button>
+        <button id="save-settings" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast-container"></div>
+
+  <select id="chat-model" style="display:none"></select>
+  <select id="chat-variant" style="display:none"><option value="">No variant</option></select>
+  <select id="chat-reasoning" style="display:none"></select>
+
+  <script src="app.js"></script>
+</body>
+</html>

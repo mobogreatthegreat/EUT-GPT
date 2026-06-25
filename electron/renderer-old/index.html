@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>EUT-GPT</title>
+        <link rel="stylesheet" href="dark_style.css">
+    </head>
+
+    <body>
+        <div id="main-container">
+            <div id="sidebar-container">
+                <button id="new-chat-button">+ New Chat</button>
+
+                <div id="chat-history">
+                </div>
+            </div>
+
+            <div id="chat-container">
+                <div id="chat-header">
+                    EUT-GPT
+                    <select id="model">
+                        <option value="">Select Model</option>
+                        <option value="model1">Model 1</option>
+                        <option value="model2">Model 2</option>
+                        <option value="model3">Model 3</option>
+                    </select>
+                </div>
+                <div id="messages-container">
+                    <div class="message ai-message">
+                        Hello! How can I help you today?
+                    </div>
+                    <div class="message user-message">Explain how AI works.</div>
+                    <div class="message ai-message">AI learns patterns from data and uses those patterns to generate responses.</div>
+                </div>
+                <div id="input-container">
+                    <textarea id="chat-input" rows="1">Ask me anything about EUT</textarea>
+                    <button id="send-button">Send</button>
+                    <div id="ai-notice">EUT-GPT can make mistakes. Check important info.</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="app.js"></script>

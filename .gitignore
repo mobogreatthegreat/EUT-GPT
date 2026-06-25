@@ -1,0 +1,27 @@
+# Dependencies
+electron/node_modules/
+
+# Build outputs
+dist/
+build/
+dist-electron/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+*.spec
+
+# Environment & config
+.env
+.opencode_cli_state.json
+
+# Generated assets
+cert.pfx
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
