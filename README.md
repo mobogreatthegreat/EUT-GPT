@@ -66,7 +66,7 @@
 EUT-GPT Launcher is **two things in one**:
 
 1. **A Python CLI** (`eutgpt_cli.py`) that connects to the [OpenCode](https://opencode.ai) server API for streaming AI conversations with model selection, reasoning-effort control, agent selection, and session management.
-2. **An Electron desktop GUI** that wraps the CLI and provides a modern chat interface with a custom frameless title bar, **19 baseplate-themed color schemes** (named after EUT wiki baseplates), collapsible reasoning blocks, and ephemeral temp chats.
+2. **An Electron desktop GUI** that wraps the CLI and provides a modern chat interface with a custom frameless title bar, **12 baseplate-themed color schemes** (named after EUT baseplates), collapsible reasoning blocks, and ephemeral temp chats.
 
 Both interface with the same `opencode serve` back-end, which is **auto-installed and managed by the launcher** on first launch.
 
