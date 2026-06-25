@@ -84,7 +84,7 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | **Reasoning effort** | Set thinking complexity (none/minimal/low/medium/high/xhigh/max) tied to model variants |
 | **19 baseplate themes** | Color schemes named after every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
 | **Session management** | Rename by double-clicking, search, auto-naming from first message |
-| **Temp (ephemeral) chats** | Toggle in sidebar — auto-deleted when you switch away |
+| **Temp (ephemeral) chats** | Toggle in sidebar - auto-deleted when you switch away |
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
 | **Custom frameless UI** | Clean opencode-inspired design with centered timeline |
 | **CLI with full command set** | `/rename`, `/export`, `/history`, model/agent/reasoning controls |
@@ -97,13 +97,13 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 
 When you launch the EUT-GPT desktop app for the first time, the following happens automatically:
 
-1. **OpenCode check** — The launcher runs `opencode --version` to see if OpenCode is installed.
-2. **Auto-install** — If OpenCode is missing, it installs it using the official installer:
+1. **OpenCode check** - The launcher runs `opencode --version` to see if OpenCode is installed.
+2. **Auto-install** - If OpenCode is missing, it installs it using the official installer:
    - **Windows:** `iex ((New-Object System.Net.WebClient).DownloadString('https://opencode.ai/install'))`
    - **macOS/Linux:** `curl -fsSL https://opencode.ai/install | sh`
-3. **Server start** — The launcher runs `opencode serve` in the background, which starts an HTTP server at `http://127.0.0.1:4096`.
-4. **Server ready** — Once the server reports healthy, the Electron window loads and connects.
-5. **Session setup** — A default session is created. If existing sessions are found from a previous run, they are loaded.
+3. **Server start** - The launcher runs `opencode serve` in the background, which starts an HTTP server at `http://127.0.0.1:4096`.
+4. **Server ready** - Once the server reports healthy, the Electron window loads and connects.
+5. **Session setup** - A default session is created. If existing sessions are found from a previous run, they are loaded.
 
 > [!IMPORTANT]
 > The OpenCode server runs as a child process of the launcher. When you close the launcher window, the server is terminated automatically. You can also start the server manually with `opencode serve` and point the launcher to a different URL in Settings.
@@ -205,8 +205,8 @@ npm start
 
 Build scripts produce a **standalone portable executable** (no runtime dependencies required). The build process has two stages:
 
-1. **Stage 1 — CLI**: PyInstaller compiles `eutgpt_cli.py` into a standalone binary.
-2. **Stage 2 — Launcher**: electron-builder bundles the Electron app with the CLI binary into a platform-specific portable package.
+1. **Stage 1 - CLI**: PyInstaller compiles `eutgpt_cli.py` into a standalone binary.
+2. **Stage 2 - Launcher**: electron-builder bundles the Electron app with the CLI binary into a platform-specific portable package.
 
 ### Windows
 
@@ -275,7 +275,7 @@ DEFAULT_SYSTEM_PROMPT = (
 )
 ```
 
-Edit this constant and rebuild the CLI to change the default system prompt. The GUI does **not** expose a system prompt editor — it is intentionally source-only to prevent accidental changes.
+Edit this constant and rebuild the CLI to change the default system prompt. The GUI does **not** expose a system prompt editor - it is intentionally source-only to prevent accidental changes.
 
 > [!WARNING]
 > The system prompt is the core restriction that limits the AI to responding only about EUT wiki content. Modifying it may cause the AI to use external knowledge.
@@ -288,22 +288,22 @@ Edit this constant and rebuild the CLI to change the default system prompt. The 
 |-------|-----------|----------|-------------|
 | `astronomy` | Astronomy Baseplate | γ (Gamma) | `#38bdf8` |
 | `automation` | Automation Baseplate | ฿ (Bits) | `#48cae4` |
-| `beta` | Beta Baseplate | — | `#eab308` |
+| `beta` | Beta Baseplate | - | `#eab308` |
 | `bonus` | Bonus Baseplate | α (Alpha) | `#4ade80` |
 | `chips` | Chips Basement | ◐ (Chips) | `#dc2626` |
 | `donation` | Donation Baseplate | $ (Donations) | `#f59e0b` |
 | `hardcore` | Hardcore Baseplate | ¤ (Ultimate) | `#ef4444` |
-| `leaderboard` | Leaderboard Baseplate | — | `#fbbf24` |
-| `lingo` | Lingo Baseplate | — | `#2dd4bf` |
+| `leaderboard` | Leaderboard Baseplate | - | `#fbbf24` |
+| `lingo` | Lingo Baseplate | - | `#2dd4bf` |
 | `mining` | Mining Baseplate | Ores | `#eab308` |
-| `offline` | Offline Baseplate | — | `#6b7280` |
+| `offline` | Offline Baseplate | - | `#6b7280` |
 | `pointx` | Point-X Baseplate | ₽X (Point-X) | `#7c3aed` |
-| `pointx-basement` | Point-X Basement | — | `#a855f7` |
+| `pointx-basement` | Point-X Basement | - | `#a855f7` |
 | `points` | Points Baseplate | ₽ (Points) | `#f59e0b` |
-| `points-basement` | Points Basement | — | `#d97706` |
+| `points-basement` | Points Basement | - | `#d97706` |
 | `prestige` | Prestige Baseplate | ₹ (Prestige) | `#c084fc` |
 | `qubits` | Qubits Baseplate | Ψ (Qubits) | `#06b6d4` |
-| `sacrifice` | Sacrifice Baseplate | — | `#dc2626` |
+| `sacrifice` | Sacrifice Baseplate | - | `#dc2626` |
 | `transcend` | Transcend Baseplate | τ (Transcend) | `#818cf8` |
 
 Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `electron/renderer/style.css` using CSS custom properties.
@@ -325,9 +325,9 @@ Adjust the model's creativity in **Settings > Temperature** (range: 0.0 to 2.0, 
 
 The composer toolbar (above the chat input) contains three dropdowns:
 
-1. **Model** — Select the AI provider and model (e.g., `anthropic/claude-sonnet-4-6`)
-2. **Variant** — Select a model variant if available (depends on the model)
-3. **Reasoning Effort** — Set the thinking complexity (`none` through `max`)
+1. **Model** - Select the AI provider and model (e.g., `anthropic/claude-sonnet-4-6`)
+2. **Variant** - Select a model variant if available (depends on the model)
+3. **Reasoning Effort** - Set the thinking complexity (`none` through `max`)
 
 **All three must be selected before the send button enables.** Defaults auto-pick the first available option when models load.
 
@@ -424,9 +424,9 @@ If you encounter a bug, please [open an issue](https://github.com/mobogreatthegr
 
 ## Transparency
 
-EUT-GPT was developed with assistance from various AI models for parts of the codebase and documentation. The core logic, CLI implementation, Electron integration, and build system were written by the project maintainer.
+EUT-GPT was developed with assistance from various AI models for parts of the codebase and documentation. The core logic, CLI implementation and build system were written by the project maintainer (@mobogreatthegreat).
 
-The OpenCode server that powers the AI backend is an [open-source project](https://github.com/anomalyco/opencode) with over 160,000 GitHub stars and 7.5M monthly users. EUT-GPT is an independent interface that uses the OpenCode API — all AI responses are handled by the OpenCode server and its configured providers.
+The OpenCode server that powers the AI backend is an [open-source project](https://github.com/anomalyco/opencode) with over 160,000 GitHub stars and 7.5M monthly users. EUT-GPT is an independent interface that uses the OpenCode API - all AI responses are handled by the OpenCode server and its configured providers.
 
 ---
 
