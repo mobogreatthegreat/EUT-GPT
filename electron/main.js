@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
 const path = require("path");
 const os = require("os");
 const http = require("http");
@@ -6,7 +6,7 @@ const https = require("https");
 const { spawn, execSync } = require("child_process");
 
 const DEFAULT_PORT = 4096;
-const APP_VERSION = "0.0.6";
+const APP_VERSION = "1.0.0";
 const OPENCODE_DIR = path.join(os.homedir(), ".opencode", "bin");
 let serverUrl = `http://127.0.0.1:${DEFAULT_PORT}`;
 let serverProcess = null;
@@ -197,6 +197,10 @@ ipcMain.handle("api-call-stream", async (_, { method, path, body }) => api(metho
 
 ipcMain.handle("get-server-url", () => serverUrl);
 ipcMain.handle("get-version", () => APP_VERSION);
+
+ipcMain.handle("open-external", async (_, url) => {
+  shell.openExternal(url);
+});
 
 ipcMain.handle("check-latest-version", async () => {
   return new Promise((resolve) => {

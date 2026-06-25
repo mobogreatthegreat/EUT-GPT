@@ -17,7 +17,7 @@ __pycache__/
 
 # Environment & config
 .env
-.opencode_cli_state.json
+.eutgpt_cli_state.json
 
 # Generated assets
 cert.pfx

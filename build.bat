@@ -14,7 +14,7 @@ where node >nul 2>&1 || (ECHO [!] Node.js not found. & PAUSE & EXIT /B 1)
 REM ---- Clean ----
 IF EXIST "dist" rmdir /s /q "dist" 2>nul
 IF EXIST "build" rmdir /s /q "build" 2>nul
-IF EXIST "dist-electron" rmdir /s /q "dist-electron" 2>nul
+IF EXIST "dist-electron-temp" rmdir /s /q "dist-electron-temp" 2>nul
 
 REM ---- Step 1: CLI ----
 ECHO.
@@ -27,58 +27,43 @@ python -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" ^
 IF %ERRORLEVEL% NEQ 0 (ECHO [!] CLI build failed & PAUSE & EXIT /B 1)
 ECHO  [+] dist\eutgpt-cli.exe
 
-REM ---- Step 2: Launcher ----
+REM ---- Step 2: Electron UI (portable single exe) ----
 ECHO.
-ECHO  [2/2] Building EUT-GPT Launcher ...
+ECHO  [2/2] Building EUT-GPT Launcher (portable) ...
 
-REM ----- Create code signing cert if missing -----
-IF NOT EXIST "cert.pfx" (
-  ECHO  [*] Creating self-signed code signing certificate...
-  powershell -Command "New-SelfSignedCertificate -Type Custom -Subject 'CN=EUT-GPT, O=EUT-GPT' -KeyUsage DigitalSignature -FriendlyName 'EUT-GPT' -CertStoreLocation 'Cert:\CurrentUser\My' -TextExtension '2.5.29.37={text}1.3.6.1.5.5.7.3.3' | Export-PfxCertificate -FilePath cert.pfx -Password (ConvertTo-SecureString -String 'eutgpt' -Force -AsPlainText)" >nul 2>&1
-  IF EXIST "cert.pfx" (ECHO  [+] cert.pfx created) ELSE (ECHO  [!] Cert creation failed, signing may fail)
+REM ----- Install npm dependencies if needed -----
+IF NOT EXIST "electron\node_modules\.package-lock.json" (
+  ECHO  [*] Installing npm dependencies...
+  pushd electron
+  call npm install
+  popd
+  IF !ERRORLEVEL! NEQ 0 (ECHO [!] npm install failed & PAUSE & EXIT /B 1)
+  ECHO  [+] npm dependencies installed
 )
 
-REM ----- Prepare win-unpacked manually (avoids app.asar lock) -----
-ECHO  [*] Preparing Electron distribution...
-mkdir "dist\win-unpacked" >nul 2>&1
-xcopy /E /I /Y "electron\node_modules\electron\dist\*" "dist\win-unpacked\" >nul 2>&1
-IF EXIST "dist\win-unpacked\resources\app.asar" del /F /Q "dist\win-unpacked\resources\app.asar" >nul 2>&1
-mkdir "dist\win-unpacked\resources\app\renderer" >nul 2>&1
-mkdir "dist\win-unpacked\resources\bin" >nul 2>&1
-copy /Y "electron\main.js" "dist\win-unpacked\resources\app\main.js" >nul 2>&1
-copy /Y "electron\preload.js" "dist\win-unpacked\resources\app\preload.js" >nul 2>&1
-copy /Y "electron\package.json" "dist\win-unpacked\resources\app\package.json" >nul 2>&1
-copy /Y "dist\eutgpt-cli.exe" "dist\win-unpacked\resources\bin\eutgpt-cli.exe" >nul 2>&1
-xcopy /E /I /Y "electron\renderer\*" "dist\win-unpacked\resources\app\renderer\" >nul 2>&1
-ECHO  [+] win-unpacked ready
+REM ----- Kill lingering electron processes -----
+taskkill /F /IM electron.exe >nul 2>&1
+taskkill /F /IM "EUT-GPT Launcher.exe" >nul 2>&1
 
-cd electron
-set CSC_LINK=%CD%\..\cert.pfx
-set CSC_KEY_PASSWORD=eutgpt
-ECHO  [*] Running electron-builder (this may take a while)...
-call npx electron-builder --win portable --prepackaged "%CD%\..\dist\win-unpacked"
-IF %ERRORLEVEL% NEQ 0 (
-  ECHO  [!] electron-builder returned error level %ERRORLEVEL%
-  cd ..
+REM ----- Electron builder (portable) -----
+pushd electron
+ECHO  [*] Running electron-builder (portable)...
+call npx electron-builder --win portable
+IF !ERRORLEVEL! NEQ 0 (
+  ECHO  [!] electron-builder failed with error level !ERRORLEVEL!
+  popd
   PAUSE
-  EXIT /B %ERRORLEVEL%
+  EXIT /B !ERRORLEVEL!
 )
-cd ..
+popd
 ECHO  [+] portable build complete
 
-REM ---- Verify ----
-for /f "tokens=*" %%f in ('dir /b "dist\EUT-GPT-Launcher-*.exe" 2^>nul') do set "LAUNCHER_EXE=%%f"
-if defined LAUNCHER_EXE (
-  ECHO  [+] dist\!LAUNCHER_EXE!
-) else (
-  ECHO  [!] Launcher exe not found in dist\
-  DIR /B "dist\*.exe" 2>nul
-  PAUSE
-  EXIT /B 1
-)
-
+REM ---- Verify outputs ----
 ECHO.
 ECHO  --- Build Complete --------------------------------
-DIR /B "dist\*.exe" 2>nul
+ECHO.
+for /f "tokens=*" %%f in ('dir /b "dist\*.exe" 2^>nul') do (
+  ECHO  [+] dist\%%f
+)
 ECHO.
 PAUSE

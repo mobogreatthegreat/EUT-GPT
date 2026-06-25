@@ -29,4 +29,5 @@ contextBridge.exposeInMainWorld("eutgptAPI", {
   // Version
   getVersion: () => ipcRenderer.invoke("get-version"),
   checkLatestVersion: () => ipcRenderer.invoke("check-latest-version"),
+  openExternal: (url) => ipcRenderer.invoke("open-external", url),
 });

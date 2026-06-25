@@ -1,11 +1,11 @@
 const state = {
   sessions:[],currentSessionId:null,messages:[],models:[],modelVariants:{},
-  currentModel:null,currentVariant:"",reasoningEffort:"",systemPrompt:"",
+  currentModel:null,reasoningEffort:"",systemPrompt:"",
   temperature:0.7,isStreaming:false,streamingText:"",assistantMsgId:"",
   connected:false,theme:"dark",tempSessions:new Set(),_sending:false,_lastDelta:0
 }
 const API=window.eutgptAPI
-const APP_VERSION = "0.0.6"
+const APP_VERSION = "1.0.0"
 const $=s=>document.querySelector(s)
 const S=s=>document.querySelector(s)
 const sessionList=S("#session-list"),sessionSearch=S("#session-search")
@@ -20,7 +20,7 @@ const toastContainer=S("#toast-container"),themeGrid=S("#theme-grid")
 const html=document.documentElement
 const tbMinimize=S("#tb-minimize"),tbMaximize=S("#tb-maximize"),tbClose=S("#tb-close")
 const welcomeScreen=S("#welcome-screen")
-const chatModelSelect=S("#chat-model"),chatVariantSelect=S("#chat-variant"),chatReasoningSelect=S("#chat-reasoning")
+const chatModelSelect=S("#chat-model"),chatReasoningSelect=S("#chat-reasoning")
 const EFFORT_LEVELS=["none","minimal","low","medium","high","xhigh","max"]
 
 async function api(m,p,b){return API.call(m,p,b)}
@@ -32,13 +32,17 @@ async function renameSession(i,t){return API.renameSession(i,t)}
 // Version
 async function updateVersionDisplay(){
   const el=document.getElementById("titlebar-version");if(!el)return
-  el.textContent="v"+APP_VERSION;el.title="Checking for updates..."
+  el.textContent="v"+APP_VERSION;el.title="Checking for updates...";el.style.cursor="default"
   try{
     const remote=await API.checkLatestVersion()
-    if(remote&&remote!==("v"+APP_VERSION)){el.textContent+=" ("+remote+" avail.)";el.style.background="var(--accent-dim)";el.style.color="var(--accent)";el.title="Update "+remote+" available"}
-    else if(remote){el.title="Latest: "+remote}
-    else{el.title="Could not check for updates"}
-  }catch{el.title="Update check failed"}
+    if(remote&&remote!==("v"+APP_VERSION)){
+      el.textContent+=" ("+remote+" avail.)";el.style.background="var(--accent-dim)";el.style.color="var(--accent)";el.style.cursor="pointer"
+      el.title="Click to download "+remote
+      el.onclick=()=>API.openExternal("https://github.com/mobogreatthegreat/EUT-GPT/releases")
+    }
+    else if(remote){el.title="Latest: "+remote;el.onclick=null}
+    else{el.title="Could not check for updates";el.onclick=null}
+  }catch{el.title="Update check failed";el.onclick=null}
 }
 // Theme
 function loadTheme(){
@@ -138,7 +142,6 @@ class CustomDropdown{
 }
 
 const chatModelDropdown=new CustomDropdown(S("#chat-model-select-wrap"))
-const chatVariantDropdown=new CustomDropdown(S("#chat-variant-select-wrap"))
 const chatReasoningDropdown=new CustomDropdown(S("#chat-reasoning-select-wrap"))
 
 // SSE
@@ -239,12 +242,10 @@ async function switchSession(id){
   state.currentSessionId=id;renderSessions(sessionSearch.value.trim());await loadMessages()
 }
 async function deleteIfEmpty(id){if(!id)return;const c=await getMessageCount(id);if(c===0){await deleteSession(id);state.sessions=state.sessions.filter(s=>s.id!==id);state.tempSessions.delete(id);if(state.currentSessionId===id)state.currentSessionId=null;renderSessions(sessionSearch.value.trim())}}
+let _pendingDeleteId=null,_pendingDeleteTimer=null
 async function confirmDelete(id){
-  const s=state.sessions.find(x=>x.id===id),label=s?.title||id.slice(0,16)
-  showToast('Delete "'+label+'"? Click again',5000)
-  const h=async e=>{const to=e.target.closest(".toast");if(to){toastContainer.removeEventListener("click",h);to.remove();await doDelete(id)}}
-  toastContainer.addEventListener("click",h)
-  setTimeout(()=>toastContainer.removeEventListener("click",h),5000)
+  if(_pendingDeleteId===id){clearTimeout(_pendingDeleteTimer);_pendingDeleteId=null;_pendingDeleteTimer=null;await doDelete(id)}
+  else{_pendingDeleteId=id;showToast("Click again to delete",3000);_pendingDeleteTimer=setTimeout(()=>{_pendingDeleteId=null},3000)}
 }
 async function doDelete(id){
   await deleteSession(id);state.sessions=state.sessions.filter(s=>s.id!==id);state.tempSessions.delete(id)
@@ -322,7 +323,7 @@ function scrollToBottom(){requestAnimationFrame(()=>{messagesContainer.scrollTop
 // Send
 async function sendMessage(){
   const text=chatInput.value.trim();if(!text||state.isStreaming||state._sending)return
-  if(!chatModelSelect.value||!chatVariantSelect.value||!chatReasoningSelect.value){showToast("Select model, variant & effort first");return}
+  if(!chatModelSelect.value){showToast("Select a model first");return}
   if(!state.currentSessionId){await newSession();return}
   state._sending=true;chatInput.value="";chatInput.style.height="auto";chatInput.disabled=true
   appendMessage("user",text,false);state.messages.push({role:"user",content:text})
@@ -332,7 +333,7 @@ async function sendMessage(){
   if(state.systemPrompt)body.system=state.systemPrompt
   if(state.currentModel||chatModelSelect.value){
     const mn=state.currentModel||chatModelSelect.value,mp=mn.split("/")
-    if(mp.length===2){let mi=mp[1];const v=state.currentVariant||chatVariantSelect.value;if(v)mi+="@"+v;body.model={providerID:mp[0],modelID:mi}}
+    if(mp.length===2){let mi=mp[1];if(state.reasoningEffort)mi+="@"+state.reasoningEffort;body.model={providerID:mp[0],modelID:mi}}
   }
   try{
     const r=await promptAsync("/session/"+state.currentSessionId+"/prompt_async",body)
@@ -346,7 +347,7 @@ async function sendMessage(){
   state._sending=false
 }
 function updateSendBtn(){
-  const ok=chatModelSelect.value&&chatVariantSelect.value&&chatReasoningSelect.value
+  const ok=chatModelSelect.value
   sendBtn.disabled=state.isStreaming||!ok
 }
 chatInput.addEventListener("input",()=>{chatInput.style.height="auto";chatInput.style.height=Math.min(chatInput.scrollHeight,120)+"px"})
@@ -366,25 +367,19 @@ function renderModels(){
   state.models.forEach(m=>{const o=document.createElement("option");o.value=m;o.textContent=m;chatModelSelect.appendChild(o)})
   if(cv&&state.models.includes(cv))chatModelSelect.value=cv
   else if(state.models.length>0){chatModelSelect.value=state.models[0];state.currentModel=state.models[0];api("PATCH","/config",{model:state.models[0]})}
-  chatModelDropdown.updateOptions();updateVariants();updateEffort();updateSendBtn()
-}
-function updateVariants(){
-  const s=chatModelSelect.value;chatVariantSelect.innerHTML=''
-  const vs=s?state.modelVariants[s]:[]
-  vs.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;chatVariantSelect.appendChild(o)})
-  if(vs.length>0&&(!chatVariantSelect.value||!vs.includes(chatVariantSelect.value))){chatVariantSelect.value=vs[0];state.currentVariant=vs[0]}
-  chatVariantDropdown.updateOptions();updateSendBtn()
+  chatModelDropdown.updateOptions();updateEffort();updateSendBtn()
 }
 function updateEffort(){
   const s=chatModelSelect.value,vs=s?(state.modelVariants[s]||[]):[],valid=[]
   EFFORT_LEVELS.forEach(l=>{if(vs.some(v=>v.toLowerCase()===l.toLowerCase()))valid.push(l)})
   chatReasoningSelect.innerHTML=''
+  const def=document.createElement("option");def.value="";def.textContent="None";chatReasoningSelect.appendChild(def)
   valid.forEach(l=>{const o=document.createElement("option");o.value=l;o.textContent=l.charAt(0).toUpperCase()+l.slice(1);chatReasoningSelect.appendChild(o)})
   if(valid.length>0&&(!chatReasoningSelect.value||!valid.includes(chatReasoningSelect.value))){chatReasoningSelect.value=valid[0];state.reasoningEffort=valid[0]}
+  else if(valid.length===0){chatReasoningSelect.value="";state.reasoningEffort=""}
   chatReasoningDropdown.updateOptions();updateSendBtn()
 }
-chatModelSelect.addEventListener("change",()=>{state.currentModel=chatModelSelect.value;updateVariants();updateEffort();chatVariantDropdown.sync();chatReasoningDropdown.sync();if(state.currentModel)api("PATCH","/config",{model:state.currentModel})})
-chatVariantSelect.addEventListener("change",()=>{state.currentVariant=chatVariantSelect.value;updateSendBtn();if(state.currentModel&&state.currentVariant)api("PATCH","/config",{model:state.currentModel+"@"+state.currentVariant})})
+chatModelSelect.addEventListener("change",()=>{state.currentModel=chatModelSelect.value;updateEffort();chatReasoningDropdown.sync();if(state.currentModel)api("PATCH","/config",{model:state.currentModel})})
 chatReasoningSelect.addEventListener("change",()=>{state.reasoningEffort=chatReasoningSelect.value;updateSendBtn()})
 
 // Settings
@@ -410,8 +405,8 @@ async function init(){
   const config=await api("GET","/config")
   if(config?.model){
     const m=config.model
-    if(m.includes("@")){const[b,v]=m.split("@");state.currentModel=b;state.currentVariant=v}else state.currentModel=m
-    if(state.currentModel&&state.models.includes(state.currentModel)){chatModelSelect.value=state.currentModel;chatModelDropdown.sync();updateVariants();updateEffort();if(state.currentVariant){chatVariantSelect.value=state.currentVariant;chatVariantDropdown.sync();chatReasoningDropdown.sync()}}
+    if(m.includes("@")){const[b,v]=m.split("@");state.currentModel=b;state.reasoningEffort=v}else state.currentModel=m
+    if(state.currentModel&&state.models.includes(state.currentModel)){chatModelSelect.value=state.currentModel;chatModelDropdown.sync();updateEffort();if(state.reasoningEffort){chatReasoningSelect.value=state.reasoningEffort;chatReasoningDropdown.sync()}}
   }
   state.connected=true;updateStatus();updateSendBtn()
 }

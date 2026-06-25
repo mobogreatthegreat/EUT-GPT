@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="astronomy" data-color-scheme="dark">
+<html lang="en" data-theme="points" data-color-scheme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,15 +86,6 @@
                 <div class="dropdown-options"></div>
               </div>
             </div>
-            <div class="custom-select composer-select" id="chat-variant-select-wrap">
-              <button class="select-trigger" data-select="chat-variant">
-                <span class="trigger-value">No variant</span>
-                <span class="trigger-arrow">▾</span>
-              </button>
-              <div class="select-dropdown">
-                <div class="dropdown-options"></div>
-              </div>
-            </div>
             <div class="custom-select composer-select" id="chat-reasoning-select-wrap">
               <button class="select-trigger" data-select="chat-reasoning">
                 <span class="trigger-value">Effort</span>
@@ -140,25 +131,18 @@
         <div class="setting-section">
           <label>Theme</label>
           <div class="theme-grid" id="theme-grid">
-            <button class="theme-swatch" data-theme="astronomy" title="Astronomy" style="--swatch:#050a14;--accent:#38bdf8">✦</button>
-            <button class="theme-swatch" data-theme="automation" title="Automation" style="--swatch:#080e14;--accent:#48cae4">✦</button>
-            <button class="theme-swatch" data-theme="beta" title="Beta" style="--swatch:#14100a;--accent:#eab308">✦</button>
-            <button class="theme-swatch" data-theme="bonus" title="Bonus" style="--swatch:#0a140e;--accent:#4ade80">✦</button>
-            <button class="theme-swatch" data-theme="chips" title="Chips Basement" style="--swatch:#0a0808;--accent:#dc2626">✦</button>
-            <button class="theme-swatch" data-theme="donation" title="Donation" style="--swatch:#14100a;--accent:#f59e0b">✦</button>
-            <button class="theme-swatch" data-theme="hardcore" title="Hardcore" style="--swatch:#140a0a;--accent:#ef4444">✦</button>
-            <button class="theme-swatch" data-theme="leaderboard" title="Leaderboard" style="--swatch:#0f0c08;--accent:#fbbf24">✦</button>
-            <button class="theme-swatch" data-theme="lingo" title="Lingo" style="--swatch:#0a1412;--accent:#2dd4bf">✦</button>
-            <button class="theme-swatch" data-theme="mining" title="Mining" style="--swatch:#0e0c0a;--accent:#eab308">✦</button>
-            <button class="theme-swatch" data-theme="offline" title="Offline" style="--swatch:#0c0c0e;--accent:#6b7280">✦</button>
-            <button class="theme-swatch" data-theme="pointx" title="Point-X" style="--swatch:#0d0a1a;--accent:#7c3aed">✦</button>
-            <button class="theme-swatch" data-theme="pointx-basement" title="Point-X Basement" style="--swatch:#0e0a14;--accent:#a855f7">✦</button>
-            <button class="theme-swatch" data-theme="points" title="Points" style="--swatch:#0f0c08;--accent:#f59e0b">✦</button>
-            <button class="theme-swatch" data-theme="points-basement" title="Points Basement" style="--swatch:#120c08;--accent:#d97706">✦</button>
-            <button class="theme-swatch" data-theme="prestige" title="Prestige" style="--swatch:#0d0a14;--accent:#c084fc">✦</button>
-            <button class="theme-swatch" data-theme="qubits" title="Qubits" style="--swatch:#080e14;--accent:#06b6d4">✦</button>
-            <button class="theme-swatch" data-theme="sacrifice" title="Sacrifice" style="--swatch:#140808;--accent:#dc2626">✦</button>
-            <button class="theme-swatch" data-theme="transcend" title="Transcend" style="--swatch:#0a0e1a;--accent:#818cf8">✦</button>
+            <button class="theme-swatch" data-theme="points" title="Points" style="--swatch:#111111;--accent:#fefefe">✦</button>
+            <button class="theme-swatch" data-theme="prestige" title="Prestige" style="--swatch:#1a1408;--accent:#ffc965">✦</button>
+            <button class="theme-swatch" data-theme="automation" title="Automation" style="--swatch:#14080d;--accent:#ea4467">✦</button>
+            <button class="theme-swatch" data-theme="pointx" title="Point-X" style="--swatch:#120d18;--accent:#d1a3e4">✦</button>
+            <button class="theme-swatch" data-theme="pointx-basement" title="Point-X Basement" style="--swatch:#181306;--accent:#fdc830">✦</button>
+            <button class="theme-swatch" data-theme="transcend" title="Transcend" style="--swatch:#071417;--accent:#65f0ff">✦</button>
+            <button class="theme-swatch" data-theme="qubits" title="Qubits" style="--swatch:#061410;--accent:#07c492">✦</button>
+            <button class="theme-swatch" data-theme="hardcore" title="Hardcore" style="background:linear-gradient(90deg,#ffa7a8,#fcb47d,#ebfdaa,#b1ffb8,#86a4e9,#7989f9,#df9bff,#ffa7a8)">✦</button>
+            <button class="theme-swatch" data-theme="astronomy" title="Astronomy" style="--swatch:#12081a;--accent:#9539cb">✦</button>
+            <button class="theme-swatch" data-theme="beta" title="Beta" style="--swatch:#0b1407;--accent:#87de4f">✦</button>
+            <button class="theme-swatch" data-theme="bonus" title="Bonus" style="--swatch:#07140d;--accent:#3efc98">✦</button>
+            <button class="theme-swatch" data-theme="chips" title="Chips Basement" style="--swatch:#130a18;--accent:#D793FF">✦</button>
           </div>
         </div>
       </div>
@@ -173,7 +157,6 @@
   <div id="toast-container"></div>
 
   <select id="chat-model" style="display:none"></select>
-  <select id="chat-variant" style="display:none"><option value="">No variant</option></select>
   <select id="chat-reasoning" style="display:none"></select>
 
   <script src="app.js"></script>

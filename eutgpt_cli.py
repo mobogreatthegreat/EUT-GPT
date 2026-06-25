@@ -38,7 +38,7 @@ from urllib.request import Request, urlopen
 
 # ── Config ──────────────────────────────────────────────────────────────────
 
-VERSION = "0.0.6"
+VERSION = "1.0.0"
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 4096

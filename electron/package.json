@@ -1,12 +1,12 @@
 {
   "name": "eutgpt-launcher",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "description": "EUT-GPT Launcher — Desktop UI for EUT-GPT AI",
   "author": "EUT-GPT",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "node -e \"const p=require('os').platform();require('child_process').execSync('npx electron-builder --'+(p==='win32'?'win portable':p==='darwin'?'mac dmg':'linux AppImage'),{stdio:'inherit'})\""
+    "build": "node -e \"const p=require('os').platform();require('child_process').execSync('npx electron-builder --'+(p==='win32'?'win nsis':p==='darwin'?'mac dmg':'linux AppImage'),{stdio:'inherit'})\""
   },
   "build": {
     "appId": "ai.eutgpt.launcher",
@@ -24,36 +24,58 @@
     },
     "win": {
       "extraResources": [
-        { "from": "../dist/eutgpt-cli.exe", "to": "bin/eutgpt-cli.exe" }
+        {
+          "from": "../dist/eutgpt-cli.exe",
+          "to": "bin/eutgpt-cli.exe"
+        }
       ],
-      "target": ["portable"],
+      "target": [
+        "nsis"
+      ],
       "icon": "icon.png",
       "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
-      "certificateFile": "../cert.pfx",
-      "certificatePassword": "eutgpt",
       "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "runAfterFinish": true
     },
     "mac": {
       "extraResources": [
-        { "from": "../dist/eutgpt-cli", "to": "bin/eutgpt-cli" }
+        {
+          "from": "../dist/eutgpt-cli",
+          "to": "bin/eutgpt-cli"
+        }
       ],
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "icon": "icon.png",
       "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
       "category": "public.app-category.productivity"
     },
     "linux": {
       "extraResources": [
-        { "from": "../dist/eutgpt-cli", "to": "bin/eutgpt-cli" }
+        {
+          "from": "../dist/eutgpt-cli",
+          "to": "bin/eutgpt-cli"
+        }
       ],
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "icon": "icon.png",
       "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
       "category": "Utility"
     }
   },
   "devDependencies": {
+    "@electron/asar": "^4.2.0",
     "electron": "^33.0.0",
     "electron-builder": "^25.0.0"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0"
   }
 }
