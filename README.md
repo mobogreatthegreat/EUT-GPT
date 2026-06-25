@@ -14,9 +14,8 @@
 
 <p align="center">
   <a href="#features">Features</a> -
-  <a href="#first-run-behavior">First Run</a> -
-  <a href="#running-from-source">Source</a> -
-  <a href="#compiling">Compile</a> -
+  <a href="#running-app">Running App</a> -
+  <a href="#running-from-source">From Source</a> -
   <a href="#configuration">Config</a> -
   <a href="#themes">Themes</a> -
   <a href="#troubleshooting">Troubleshooting</a> -
@@ -29,23 +28,20 @@
 
 - [Overview](#overview)
 - [Features](#features)
-- [First Run Behavior](#first-run-behavior)
-- [Project Structure](#project-structure)
+- [Running App](#running-app)
 - [Running from Source](#running-from-source)
   - [Prerequisites](#prerequisites)
-  - [CLI Only](#cli-only)
-  - [Desktop App](#desktop-app)
-- [Compiling](#compiling)
-  - [Windows](#windows)
-  - [macOS](#macos)
-  - [Linux](#linux)
+  - [Windows Build](#windows-build)
+  - [Linux / macOS Build](#linux--macos-build)
+- [First Run Behavior](#first-run-behavior)
+- [Project Structure](#project-structure)
 - [Configuration](#configuration)
   - [System Prompt](#system-prompt)
   - [Themes](#themes)
   - [Server URL](#server-url)
   - [Temperature](#temperature)
 - [CLI Commands](#cli-commands)
-- [Model Selection](#model-selection)
+- [Model & Thinking Selection](#model--thinking-selection)
 - [Session Management](#session-management)
 - [Temp Chats](#temp-chats)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
@@ -77,14 +73,14 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | Feature | Description |
 |---------|-------------|
 | **Streaming responses** | Real-time SSE-based message streaming with typing indicators |
-| **Model switching** | Select provider/model/variant from the composer toolbar |
-| **Reasoning effort** | Set thinking complexity (none/minimal/low/medium/high/xhigh/max) tied to model variants |
-| **12 baseplate themes** | Color schemes named after (almost) every baseplate on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
+| **Model switching** | Select any provider/model from the composer toolbar |
+| **Thinking control** | Set thinking complexity (none/minimal/low/medium/high/xhigh/max) tied to model variants |
+| **12 baseplate themes** | Color schemes named after baseplates on [eutwiki.com](https://eutwiki.com/Category:Baseplates), with colors sourced from their currency templates |
 | **Session management** | Rename by double-clicking, search, auto-naming from first message |
 | **Temp (ephemeral) chats** | Toggle in sidebar - auto-deleted when you switch away |
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
-| **Custom frameless UI** | Clean opencode-inspired design with centered timeline |
-| **CLI with full command set** | `/rename`, `/export`, `/history`, model/agent/reasoning controls |
+| **Custom frameless UI** | Clean design with centered timeline and dark themes |
+| **CLI with full command set** | `/rename`, `/export`, `/history`, model/thinking/agent controls |
 | **Cross-platform builds** | Portable `.exe` (Windows), AppImage (Linux), DMG (macOS) |
 
 ---
@@ -111,6 +107,7 @@ When you launch the EUT-GPT desktop app for the first time, the following happen
 ```
 eutgpt-app/
 ├── eutgpt_cli.py              # Python CLI entry point
+├── eutgpt-cli.spec            # PyInstaller spec (auto-generated)
 ├── build.bat                  # Windows build script
 ├── build.sh                   # Linux/macOS build script
 ├── cert.pfx                   # Self-signed code signing cert (auto-generated)
@@ -122,18 +119,30 @@ eutgpt-app/
 │   ├── package.json           # Electron dependencies & builder config
 │   ├── node_modules/          # Installed via npm install
 │   ├── renderer/
-│   │   ├── index.html         # OpenCode-inspired UI
+│   │   ├── index.html         # UI layout
 │   │   ├── style.css          # 12-theme CSS variable system
 │   │   └── app.js             # Frontend logic
 │   └── renderer-old/          # Original UI backup
 ├── dist/                      # Build output (generated)
 ├── build/                     # PyInstaller workdir (generated)
-└── dist-electron/             # Electron build cache (generated)
+└── dist-electron-temp/        # Temp electron files (generated)
 ```
 
 ---
 
+## Running App
+
+The easiest way to use EUT-GPT is to download a pre-built release:
+
+**Windows** — Download `EUT-GPT-Launcher-1.0.0.exe` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No installation needed.
+
+**Linux / macOS** — Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
+
+---
+
 ## Running from Source
+
+Download the source code from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page (or clone the repo) and compile it yourself.
 
 ### Prerequisites
 
@@ -145,162 +154,55 @@ eutgpt-app/
 
 Install Python from [python.org](https://python.org/downloads) and Node.js from [nodejs.org](https://nodejs.org).
 
-### CLI Only
-
-Run the Python CLI directly without the desktop UI:
-
-```bash
-cd eutgpt-app
-
-# Ensure OpenCode is installed (one time)
-curl -fsSL https://opencode.ai/install | sh
-# Or on Windows:
-# iex ((New-Object System.Net.WebClient).DownloadString('https://opencode.ai/install'))
-
-# Start the server in a separate terminal
-opencode serve
-
-# Run the CLI
-python eutgpt_cli.py
-```
-
-The CLI connects to `http://127.0.0.1:4096` by default. Override with the `OPENCODE_SERVER_URL` environment variable.
-
-> [!TIP]
-> Type `/help` inside the CLI to see available commands.
-
-### Desktop App
-
-```bash
-cd eutgpt-app/electron
-
-# Install dependencies (first time only)
-npm install
-
-# Run in dev mode
-npm start
-```
-
-This launches the Electron window. The launcher auto-installs OpenCode and starts the server if needed. You can also start the server yourself:
-
-```bash
-# Terminal 1: Start the server
-opencode serve
-
-# Terminal 2: Launch the GUI connected to the running server
-cd eutgpt-app/electron
-npm start
-```
-
-> [!NOTE]
-> In dev mode, the CLI binary is not bundled. The launcher calls `opencode` directly from PATH. For the full bundled experience, use a [compiled build](#compiling).
-
----
-
-## Compiling
-
-Build scripts produce a **standalone portable executable** (no runtime dependencies required). The build process has two stages:
-
-1. **Stage 1 - CLI**: PyInstaller compiles `eutgpt_cli.py` into a standalone binary.
-2. **Stage 2 - Launcher**: electron-builder bundles the Electron app with the CLI binary into a platform-specific portable package.
-
-### Windows
+### Windows Build
 
 ```cmd
 cd eutgpt-app
 build.bat
 ```
 
-**Output:** `dist/EUT-GPT-Launcher-1.0.0.exe` (portable, ~83 MB)
+**Output:** `dist/EUT-GPT-Launcher-1.0.0.exe` (portable) + `dist/eutgpt-cli.exe`
 
 The script automatically:
 - Installs PyInstaller if missing
-- Compiles `eutgpt-cli.exe` into `build/cli/`
-- Creates a self-signed code signing certificate (`cert.pfx`)
-- Runs electron-builder with `--prepackaged` to avoid app.asar lock issues
-- Outputs a portable executable to `dist/`
+- Compiles `eutgpt-cli.exe` into `dist/`
+- Runs `electron-builder --win portable` for a self-contained single `.exe`
+
+### Linux / macOS Build
+
+```bash
+cd eutgpt-app
+chmod +x build.sh
+./build.sh
+```
+
+**Output:** `dist/EUT-GPT-Launcher-1.0.0.dmg` (macOS) or `dist/EUT-GPT-Launcher-1.0.0.AppImage` (Linux)
 
 > [!IMPORTANT]
-> On some systems, Windows Defender may hold a lock on extracted Electron files. If you encounter `app.asar` lock errors, temporarily exclude the project directory from Windows Defender or restart and try again.
-
-### macOS
-
-```bash
-cd eutgpt-app
-chmod +x build.sh
-./build.sh
-```
-
-**Output:** `dist/EUT-GPT-Launcher-1.0.0.dmg`
-
-The script detects macOS automatically and:
-- Compiles the CLI with PyInstaller
-- Disables code signing (set `CSC_LINK` if you have a signing certificate)
-- Builds the DMG with electron-builder
-
-> [!NOTE]
-> On macOS, you may need to install PyInstaller first: `pip3 install pyinstaller`
-
-### Linux
-
-```bash
-cd eutgpt-app
-chmod +x build.sh
-./build.sh
-```
-
-**Output:** `dist/EUT-GPT-Launcher-1.0.0.AppImage`
-
-The script detects Linux and builds an AppImage. Same two-stage process as Windows/macOS.
+> On some systems, Windows Defender may hold a lock on extracted Electron files during Windows builds. If you encounter lock errors, temporarily exclude the project directory from Windows Defender and retry.
 
 ---
 
 ## Configuration
 
-### System Prompt
-
-The default system prompt is defined in `eutgpt_cli.py`:
-
-```python
-DEFAULT_SYSTEM_PROMPT = (
-    "You are an AI assistant that can ONLY respond using information from "
-    "https://eutwiki.com. You must not use any external knowledge, training data, "
-    "or any other sources. If the information is not available on eutwiki.com, "
-    "you must clearly state that the information is not available on eutwiki.com "
-    "rather than making up an answer. Always cite eutwiki.com as your source."
-)
-```
-
-Edit this constant and rebuild the CLI to change the default system prompt. The GUI does **not** expose a system prompt editor - it is intentionally source-only to prevent accidental changes.
-
-> [!WARNING]
-> The system prompt is the core restriction that limits the AI to responding only about EUT wiki content. Modifying it may cause the AI to use external knowledge.
-
 ### Themes
 
-12 themes are available, each named after a baseplate on the [EUT Wiki](https://eutwiki.com/Category:Baseplates). Theme colors are drawn from each baseplate's currency template:
+12 themes are available in the GUI, each named after a baseplate on the [EUT Wiki](https://eutwiki.com/Category:Baseplates). Theme colors are drawn from each baseplate's currency template:
 
-| Theme | Baseplate | Currency | Accent Color |
-|-------|-----------|----------|-------------|
-| `astronomy` | Astronomy Baseplate | γ (Gamma) | `#38bdf8` |
-| `automation` | Automation Baseplate | ฿ (Bits) | `#48cae4` |
-| `beta` | Beta Baseplate | - | `#eab308` |
-| `bonus` | Bonus Baseplate | α (Alpha) | `#4ade80` |
-| `chips` | Chips Basement | ◐ (Chips) | `#dc2626` |
-| `donation` | Donation Baseplate | $ (Donations) | `#f59e0b` |
-| `hardcore` | Hardcore Baseplate | ¤ (Ultimate) | `#ef4444` |
-| `leaderboard` | Leaderboard Baseplate | - | `#fbbf24` |
-| `lingo` | Lingo Baseplate | - | `#2dd4bf` |
-| `mining` | Mining Baseplate | Ores | `#eab308` |
-| `offline` | Offline Baseplate | - | `#6b7280` |
-| `pointx` | Point-X Baseplate | ₽X (Point-X) | `#7c3aed` |
-| `pointx-basement` | Point-X Basement | - | `#a855f7` |
-| `points` | Points Baseplate | ₽ (Points) | `#f59e0b` |
-| `points-basement` | Points Basement | - | `#d97706` |
-| `prestige` | Prestige Baseplate | ₹ (Prestige) | `#c084fc` |
-| `qubits` | Qubits Baseplate | Ψ (Qubits) | `#06b6d4` |
-| `sacrifice` | Sacrifice Baseplate | - | `#dc2626` |
-| `transcend` | Transcend Baseplate | τ (Transcend) | `#818cf8` |
+| Theme | Baseplate | Accent Color |
+|-------|-----------|-------------|
+| `astronomy` | Astronomy Baseplate | `#9539cb` |
+| `automation` | Automation Baseplate | `#ea4467` |
+| `beta` | Beta Baseplate | `#87de4f` |
+| `bonus` | Bonus Baseplate | `#3efc98` |
+| `chips` | Chips Basement | `#D793FF` |
+| `hardcore` | Hardcore Baseplate | `#ffa7a8/Rainbow Gradient` |
+| `pointx` | Point-X Baseplate | `#d1a3e4` |
+| `pointx-basement` | Point-X Basement | `#fdc830` |
+| `points` | Points Baseplate | `#fefefe` |
+| `prestige` | Prestige Baseplate | `#ffc965` |
+| `qubits` | Qubits Baseplate | `#07c492` |
+| `transcend` | Transcend Baseplate | `#65f0ff` |
 
 Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `electron/renderer/style.css` using CSS custom properties.
 
@@ -309,7 +211,7 @@ Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change them
 The default server URL is `http://127.0.0.1:4096`. Override it in two ways:
 
 - **Environment variable**: `OPENCODE_SERVER_URL=http://other-host:port`
-- **GUI**: Settings > Server URL (updated on launch from environment, not persisted across restarts)
+- **GUI**: Settings > Server URL (displayed on launch, not persisted across restarts)
 
 ### Temperature
 
@@ -317,15 +219,14 @@ Adjust the model's creativity in **Settings > Temperature** (range: 0.0 to 2.0, 
 
 ---
 
-## Model Selection
+## Model & Thinking Selection
 
-The composer toolbar (above the chat input) contains three dropdowns:
+The composer toolbar (above the chat input) contains two dropdowns:
 
-1. **Model** - Select the AI provider and model (e.g., `anthropic/claude-sonnet-4-6`)
-2. **Variant** - Select a model variant if available (depends on the model)
-3. **Reasoning Effort** - Set the thinking complexity (`none` through `max`)
+1. **Model** - Select the AI provider and model (e.g., `opencode/deepseek-v4-flash-free`)
+2. **Thinking** - Set the thinking complexity (`None` through `Max`). Only levels available for the selected model are shown.
 
-**All three must be selected before the send button enables.** Defaults auto-pick the first available option when models load.
+The send button enables once a model is selected. The thinking level defaults to the first available option for the chosen model.
 
 ---
 
@@ -362,9 +263,8 @@ The CLI (`eutgpt_cli.py`) supports the following commands. Type `/help` in the C
 
 - **Auto-naming**: The first message you send in a session auto-generates a title (first 42 characters, truncated with `...`).
 - **Rename**: Double-click a session title in the sidebar to edit it inline. Press Enter to save.
-- **CLI rename**: Use `/rename New Title` in the CLI.
 - **Search**: Use the search bar at the top of the sidebar to filter sessions by title.
-- **Delete**: Click the ✕ button on a session item to delete it. A confirmation dialog appears.
+- **Delete**: Click the ✕ button on a session item, then click the same ✕ again within 3 seconds to confirm deletion.
 
 ---
 
@@ -378,21 +278,15 @@ Toggle the switch next to the **New Chat** button to create a **temp (ephemeral)
 - Are auto-deleted even if they contain messages
 - Prevent accidental clutter from throwaway conversations
 
-> [!TIP]
-> The old "New Temp Chat" button has been replaced with a toggle switch for a cleaner sidebar experience.
-
 ---
 
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| `Enter` | Send message |
-| `Shift + Enter` | New line in input |
 | `Ctrl + N` | New chat |
 | `Ctrl + K` | Focus session search |
 | `Ctrl + ,` | Open Settings |
-| `Double-click session title` | Rename session |
 
 ---
 
@@ -400,16 +294,14 @@ Toggle the switch next to the **New Chat** button to create a **temp (ephemeral)
 
 | Problem | Solution |
 |---------|----------|
-| `opencode not found` | The launcher auto-installs it. If it fails, run the official installer: `curl -fsSL https://opencode.ai/install | sh` |
+| `opencode not found` | The launcher auto-installs it. If it fails, run the official installer: `curl -fsSL https://opencode.ai/install \| sh` |
 | `address already in use` | Another process is using port 4096. Kill it or set `OPENCODE_SERVER_URL` to a different port. |
-| `app.asar` build error | Add a Windows Defender exclusion for the project directory, or restart and try again. |
-| `winCodeSign` extraction fails | Manually download and extract winCodeSign to `%LOCALAPPDATA%\electron-builder\cache\winCodeSign\`. |
+| Build lock errors | Add a Windows Defender exclusion for the project directory, or restart and retry. |
 | GUI loads but shows "Disconnected" | Ensure `opencode serve` is running. Check the server URL in Settings. |
-| Messages are empty | The model/variant/effort must **all** be selected in the composer toolbar before sending. |
+| Messages are empty | Select a model in the composer toolbar before sending. |
 | Hyperlinks not clickable | Make sure the response contains markdown links like `[text](url)`. Plain URLs are not auto-linked. |
 | Theme doesn't apply fully | Some themed elements may require a window refresh. Press `Ctrl+R` to reload the renderer. |
 | CLI exits immediately | The CLI requires `opencode serve` to be running in the background. Start it first. |
-| Build fails on macOS signing | The build script disables code signing with `CSC_LINK=`. Set your own cert if needed. |
 | Can't find the system prompt in GUI | The system prompt is intentionally source-only. Edit `DEFAULT_SYSTEM_PROMPT` in `eutgpt_cli.py`. |
 
 ---

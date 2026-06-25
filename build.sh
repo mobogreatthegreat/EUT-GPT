@@ -26,7 +26,14 @@ python3 -c "import PyInstaller" 2>/dev/null || { echo "[*] Installing PyInstalle
 command -v node >/dev/null 2>&1 || { echo "[!] Node.js not found"; exit 1; }
 
 # ── Clean ─────────────────────────────────────────────────────
-rm -rf dist build dist-electron
+echo " [*] Cleaning previous builds..."
+rm -rf dist build dist-electron-temp
+
+# ── Install npm deps if needed ────────────────────────────────
+if [ ! -f "electron/node_modules/.package-lock.json" ]; then
+  echo " [*] Installing npm dependencies..."
+  (cd electron && npm install)
+fi
 
 # ── Step 1: CLI ───────────────────────────────────────────────
 echo ""
@@ -36,18 +43,22 @@ python3 -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" \
   --hidden-import "urllib.error" --hidden-import "urllib.request" \
   --hidden-import "http.client" --hidden-import "json" \
   --hidden-import "threading" --hidden-import "shlex" --clean "eutgpt_cli.py"
-echo " [+] dist/eutgpt-cli"
+if [ ! -f "$CLI_OUTPUT" ]; then
+  echo "[!] CLI build failed"
+  exit 1
+fi
+echo " [+] $CLI_OUTPUT"
 
 # ── Step 2: Launcher ──────────────────────────────────────────
 echo ""
 echo " [2/2] Building EUT-GPT Launcher ($PLATFORM) ..."
-cd electron
+
 # Disable code signing (not configured for CI/local builds)
 export CSC_LINK=
 export CSC_KEY_PASSWORD=
+
 echo " [*] Running electron-builder (this may take a while)..."
-npx electron-builder $LAUNCHER_TARGET
-cd ..
+(cd electron && npx electron-builder $LAUNCHER_TARGET)
 
 # ── Verify ────────────────────────────────────────────────────
 echo ""
