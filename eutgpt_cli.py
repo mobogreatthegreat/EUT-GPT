@@ -22,7 +22,6 @@ Commands:
   /help                 Show this help
   /quit                 Exit
 """
-
 from __future__ import annotations
 
 import json
@@ -38,6 +37,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 # ── Config ──────────────────────────────────────────────────────────────────
+
+VERSION = "0.0.6"
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 4096

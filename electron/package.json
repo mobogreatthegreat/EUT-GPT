@@ -1,6 +1,6 @@
 {
   "name": "eutgpt-launcher",
-  "version": "1.0.0",
+  "version": "0.0.6",
   "description": "EUT-GPT Launcher — Desktop UI for EUT-GPT AI",
   "author": "EUT-GPT",
   "main": "main.js",

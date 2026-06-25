@@ -5,6 +5,7 @@ const state = {
   connected:false,theme:"dark",tempSessions:new Set(),_sending:false,_lastDelta:0
 }
 const API=window.eutgptAPI
+const APP_VERSION = "0.0.6"
 const $=s=>document.querySelector(s)
 const S=s=>document.querySelector(s)
 const sessionList=S("#session-list"),sessionSearch=S("#session-search")
@@ -28,6 +29,17 @@ async function deleteSession(i){return API.deleteSession(i)}
 async function getMessageCount(i){return API.getMessageCount(i)}
 async function renameSession(i,t){return API.renameSession(i,t)}
 
+// Version
+async function updateVersionDisplay(){
+  const el=document.getElementById("titlebar-version");if(!el)return
+  el.textContent="v"+APP_VERSION;el.title="Checking for updates..."
+  try{
+    const remote=await API.checkLatestVersion()
+    if(remote&&remote!==("v"+APP_VERSION)){el.textContent+=" ("+remote+" avail.)";el.style.background="var(--accent-dim)";el.style.color="var(--accent)";el.title="Update "+remote+" available"}
+    else if(remote){el.title="Latest: "+remote}
+    else{el.title="Could not check for updates"}
+  }catch{el.title="Update check failed"}
+}
 // Theme
 function loadTheme(){
   try{
@@ -389,7 +401,7 @@ document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key==="n"){
 
 // Init
 async function init(){
-  loadTheme();initSSE();updateStatus();updateFill()
+  loadTheme();updateVersionDisplay();initSSE();updateStatus();updateFill()
   await loadModels();await loadSessions()
   for(const s of state.sessions){const c=await getMessageCount(s.id);if(c===0&&s.id!==state.currentSessionId)await deleteSession(s.id)}
   await loadSessions()

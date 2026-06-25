@@ -25,4 +25,8 @@ contextBridge.exposeInMainWorld("eutgptAPI", {
   deleteSession: (id) => ipcRenderer.invoke("delete-session", { id }),
   getMessageCount: (id) => ipcRenderer.invoke("get-message-count", { id }),
   renameSession: (id, title) => ipcRenderer.invoke("rename-session", { id, title }),
+
+  // Version
+  getVersion: () => ipcRenderer.invoke("get-version"),
+  checkLatestVersion: () => ipcRenderer.invoke("check-latest-version"),
 });

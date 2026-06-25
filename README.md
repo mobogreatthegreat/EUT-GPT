@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/platform-win%20%7C%20mac%20%7C%20linux-lightgrey?style=flat-square&labelColor=1a1a2e"/>
   <img src="https://img.shields.io/badge/license-MIT-blueviolet?style=flat-square&labelColor=1a1a2e"/>
   <img src="https://img.shields.io/badge/opencode-1.0.0-5eead4?style=flat-square&labelColor=1a1a2e"/>
+  <img src="https://img.shields.io/badge/version-0.0.6-blueviolet?style=flat-square&labelColor=1a1a2e"/>
 </p>
 
 <h1 align="center">EUT-GPT Launcher</h1>
@@ -48,6 +49,7 @@
   - [Themes](#themes)
   - [Server URL](#server-url)
   - [Temperature](#temperature)
+- [CLI Commands](#cli-commands)
 - [Model Selection](#model-selection)
 - [Session Management](#session-management)
 - [Temp Chats](#temp-chats)
@@ -330,6 +332,35 @@ The composer toolbar (above the chat input) contains three dropdowns:
 3. **Reasoning Effort** - Set the thinking complexity (`none` through `max`)
 
 **All three must be selected before the send button enables.** Defaults auto-pick the first available option when models load.
+
+---
+
+## CLI Commands
+
+The CLI (`eutgpt_cli.py`) supports the following commands. Type `/help` in the CLI to see them at any time.
+
+| Command | Description |
+|---------|-------------|
+| `/model [name]` | List available models or switch to a specific one (e.g. `opencode/deepseek-v4-flash-free@high`) |
+| `/reasoning <level>` | Set reasoning effort via model variant (`none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`) |
+| `/variant <name>` | Explicitly set model variant |
+| `/system [text]` | Show current system prompt or set a new one |
+| `/temperature [n]` | Show or set temperature (0.0-2.0) |
+| `/agents` | List available agents |
+| `/agent [name]` | Show current agent or switch to a different one |
+| `/sessions` | List all sessions |
+| `/new [title]` | Create a new session with an optional title |
+| `/rename <title>` | Rename the current session |
+| `/clear` | Clear local message history for the current session |
+| `/history [n]` | Show the last N messages (default: 10) |
+| `/export [file]` | Export the current conversation to a JSON file |
+| `/abort` | Abort the currently running response |
+| `/config` | Show the current configuration (model, variant, reasoning, temperature, agent) |
+| `/help` | Show the help message with all available commands |
+| `/quit` | Exit the CLI |
+
+> [!TIP]
+> All commands are prefixed with `/`. Arguments containing spaces should be quoted. For example: `/rename "My Chat Session"`.
 
 ---
 

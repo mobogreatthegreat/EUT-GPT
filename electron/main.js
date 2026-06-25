@@ -1,15 +1,23 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
+const os = require("os");
 const http = require("http");
+const https = require("https");
 const { spawn, execSync } = require("child_process");
 
 const DEFAULT_PORT = 4096;
+const APP_VERSION = "0.0.6";
+const OPENCODE_DIR = path.join(os.homedir(), ".opencode", "bin");
 let serverUrl = `http://127.0.0.1:${DEFAULT_PORT}`;
 let serverProcess = null;
 
 // ── Launcher ─────────────────────────────────────────────────
 
 function isToolInstalled(name) {
+  if (name === "opencode") {
+    const binaryPath = path.join(OPENCODE_DIR, process.platform === "win32" ? "opencode.exe" : "opencode");
+    if (require("fs").existsSync(binaryPath)) return true;
+  }
   try {
     execSync(name === "opencode" ? "opencode --version" : `where ${name}`, {
       stdio: "ignore", shell: true,
@@ -68,7 +76,9 @@ function waitForServer(port, timeout = 30) {
 
 async function startServer(port) {
   return new Promise((resolve) => {
-    const proc = spawn("opencode", ["serve", "--port", String(port)], {
+    const opencodeBin = path.join(OPENCODE_DIR, process.platform === "win32" ? "opencode.exe" : "opencode");
+    const cmd = require("fs").existsSync(opencodeBin) ? opencodeBin : "opencode";
+    const proc = spawn(cmd, ["serve", "--port", String(port)], {
       stdio: "ignore", shell: true, windowsHide: true,
     });
     proc.on("error", () => resolve(null));
@@ -186,6 +196,25 @@ ipcMain.handle("api-call", async (_, { method, path, body }) => {
 ipcMain.handle("api-call-stream", async (_, { method, path, body }) => api(method, path, body));
 
 ipcMain.handle("get-server-url", () => serverUrl);
+ipcMain.handle("get-version", () => APP_VERSION);
+
+ipcMain.handle("check-latest-version", async () => {
+  return new Promise((resolve) => {
+    const req = https.get("https://api.github.com/repos/mobogreatthegreat/EUT-GPT/tags", {
+      headers: { "User-Agent": "EUT-GPT-Launcher" },
+      timeout: 8000,
+    }, (res) => {
+      let data = "";
+      res.on("data", (c) => data += c);
+      res.on("end", () => {
+        try { const tags = JSON.parse(data); resolve(tags[0]?.name || null); }
+        catch { resolve(null); }
+      });
+    });
+    req.on("error", () => resolve(null));
+    req.on("timeout", () => { req.destroy(); resolve(null); });
+  });
+});
 
 // Window controls
 ipcMain.handle("window-minimize", (e) => BrowserWindow.fromWebContents(e.sender)?.minimize());
