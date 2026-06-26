@@ -83,7 +83,7 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
 | **Custom frameless UI** | Clean design with centered timeline and dark themes |
 | **CLI with full command set** | `/rename`, `/export`, `/history`, model/thinking/agent controls |
-| **Cross-platform builds** | Portable `.exe` (Windows), AppImage (Linux), DMG (macOS) |
+| **Cross-platform builds** | x64 + arm64 per platform — portable `.exe` (Windows), `.AppImage` (Linux), `.dmg` (macOS) |
 
 ---
 
@@ -136,9 +136,18 @@ eutgpt-app/
 
 The easiest way to use EUT-GPT is to download a pre-built release:
 
-**Windows / Linux** - Download `EUT-GPT-Launcher-1.0.1-Win.exe` or `EUT-GPT-Launcher-1.0.1-Linux.AppImage` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No compilation needed.
+Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page. Each release includes 6 architecture-specific files:
 
-**MacOS** - Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
+| File | Platform | Arch |
+|------|----------|------|
+| `EUT-GPT-Launcher-1.0.2-x64-Win.exe` | Windows | x64 |
+| `EUT-GPT-Launcher-1.0.2-arm64-Win.exe` | Windows | arm64 |
+| `EUT-GPT-Launcher-1.0.2-x64-Mac.dmg` | macOS | x64 (Intel) |
+| `EUT-GPT-Launcher-1.0.2-arm64-Mac.dmg` | macOS | arm64 (Apple Silicon) |
+| `EUT-GPT-Launcher-1.0.2-x64-Linux.AppImage` | Linux | x64 |
+| `EUT-GPT-Launcher-1.0.2-arm64-Linux.AppImage` | Linux | arm64 |
+
+No compilation needed — just download the file for your OS and arch and run it.
 
 ---
 
@@ -156,32 +165,44 @@ Download the source code from the [Releases](https://github.com/mobogreatthegrea
 
 Install Python from [python.org](https://python.org/downloads) and Node.js from [nodejs.org](https://nodejs.org).
 
-### Windows Build
+### Build Scripts
 
+**Windows:**
 ```cmd
 cd eutgpt-app
+set CLI_NAME=EUT-GPT-CLI-1.0.2-x64-Win
+set LAUNCHER_ARGS=--win portable --x64
 build.bat
 ```
 
-**Output:** `dist/EUT-GPT-Launcher-1.0.1.exe` (~81 MB) + `dist/eutgpt-cli.exe`
-
-The script automatically:
-- Installs PyInstaller if missing
-- Compiles `eutgpt-cli.exe` into `dist/`
-- Runs `electron-builder --win portable` for a self-contained single `.exe`
-
-### Linux / macOS Build
-
+**Linux:**
 ```bash
 cd eutgpt-app
-chmod +x build.sh
+CLI_NAME=EUT-GPT-CLI-1.0.2-x64-Linux \
+LAUNCHER_ARGS="--linux AppImage --x64" \
 ./build.sh
 ```
 
-**Output:** `dist/EUT-GPT-Launcher-1.0.1.dmg` (macOS) or `dist/EUT-GPT-Launcher-1.0.1.AppImage` (Linux)
+**macOS (Intel):**
+```bash
+cd eutgpt-app
+CLI_NAME=EUT-GPT-CLI-1.0.2-x64-Mac \
+LAUNCHER_ARGS="--mac dmg --x64" \
+./build.sh
+```
 
-> [!NOTE]
-> MacOS currently has a known issue with compiling and you may not be able to use it on MacOS until it is fixed. The Linux build has been confirmed to be working.
+**macOS (Apple Silicon):**
+```bash
+cd eutgpt-app
+CLI_NAME=EUT-GPT-CLI-1.0.2-arm64-Mac \
+LAUNCHER_ARGS="--mac dmg --arm64" \
+./build.sh
+```
+
+Each script automatically:
+- Installs PyInstaller if missing
+- Compiles the CLI into `dist/`
+- Runs electron-builder for the specified target and architecture
 
 > [!IMPORTANT]
 > On some systems, Windows Defender may hold a lock on extracted Electron files during Windows builds. If you encounter lock errors, temporarily exclude the project directory from Windows Defender and retry.

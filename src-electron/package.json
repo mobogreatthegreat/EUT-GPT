@@ -1,6 +1,6 @@
 {
   "name": "eutgpt-launcher",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "EUT-GPT Launcher — Desktop UI for EUT-GPT AI",
   "author": "EUT-GPT",
   "main": "main.js",
@@ -25,15 +25,16 @@
     "win": {
       "extraResources": [
         {
-          "from": "../dist/eutgpt-cli.exe",
-          "to": "bin/eutgpt-cli.exe"
+          "from": "../dist",
+          "to": "bin",
+          "filter": ["EUT-GPT-CLI-*"]
         }
       ],
       "target": [
-        "nsis"
+        "portable"
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}-x32-64-Win.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-${arch}-Win.${ext}",
       "signAndEditExecutable": false
     },
     "nsis": {
@@ -44,29 +45,31 @@
     "mac": {
       "extraResources": [
         {
-          "from": "../dist/eutgpt-cli",
-          "to": "bin/eutgpt-cli"
+          "from": "../dist",
+          "to": "bin",
+          "filter": ["EUT-GPT-CLI-*"]
         }
       ],
       "target": [
         "dmg"
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-${arch}-Mac.${ext}",
       "category": "public.app-category.productivity"
     },
     "linux": {
       "extraResources": [
         {
-          "from": "../dist/eutgpt-cli",
-          "to": "bin/eutgpt-cli"
+          "from": "../dist",
+          "to": "bin",
+          "filter": ["EUT-GPT-CLI-*"]
         }
       ],
       "target": [
         "AppImage"
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-${arch}-Linux.${ext}",
       "category": "Utility"
     }
   },

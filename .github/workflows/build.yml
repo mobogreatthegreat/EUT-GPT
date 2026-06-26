@@ -13,23 +13,37 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
         include:
           - os: ubuntu-latest
-            cli_src: eutgpt-cli
-            cli_out: eutgpt-cli-linux
-            launcher_pat: EUT-GPT-Launcher-*.AppImage
+            arch: x64
+            cli_name: EUT-GPT-CLI-1.0.2-x64-Linux
+            cli_ext: ""
+            launcher_args: --linux AppImage --x64
+          - os: ubuntu-latest
+            arch: arm64
+            cli_name: EUT-GPT-CLI-1.0.2-arm64-Linux
+            cli_ext: ""
+            launcher_args: --linux AppImage --arm64
+          - os: macos-13
+            arch: x64
+            cli_name: EUT-GPT-CLI-1.0.2-x64-Mac
+            cli_ext: ""
+            launcher_args: --mac dmg --x64
           - os: macos-latest
-            cli_src: eutgpt-cli
-            cli_out: eutgpt-cli-macos
-            launcher_pat: EUT-GPT-Launcher-*.dmg
+            arch: arm64
+            cli_name: EUT-GPT-CLI-1.0.2-arm64-Mac
+            cli_ext: ""
+            launcher_args: --mac dmg --arm64
           - os: windows-latest
-            cli_src: eutgpt-cli.exe
-            cli_out: eutgpt-cli-win.exe
-            launcher_pat: EUT-GPT-Launcher-*.exe
+            arch: x64
+            cli_name: EUT-GPT-CLI-1.0.2-x64-Win
+            cli_ext: .exe
+            launcher_args: --win portable --x64
+          - os: windows-latest
+            arch: arm64
+            cli_name: EUT-GPT-CLI-1.0.2-arm64-Win
+            cli_ext: .exe
+            launcher_args: --win portable --arm64
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -52,22 +66,28 @@ jobs:
       - name: Build (Windows)
         if: runner.os == 'Windows'
         shell: cmd
+        env:
+          CLI_NAME: ${{ matrix.cli_name }}
+          LAUNCHER_ARGS: ${{ matrix.launcher_args }}
         run: build.bat
 
       - name: Build (Linux / macOS)
         if: runner.os != 'Windows'
+        env:
+          CLI_NAME: ${{ matrix.cli_name }}
+          LAUNCHER_ARGS: ${{ matrix.launcher_args }}
         run: chmod +x build.sh && ./build.sh
 
       - name: Collect artifacts into builds/
         run: |
           mkdir -p builds
-          cp "dist/${{ matrix.cli_src }}" "builds/${{ matrix.cli_out }}"
-          cp dist/${{ matrix.launcher_pat }} builds/
+          cp "dist/${{ matrix.cli_name }}${{ matrix.cli_ext }}" "builds/${{ matrix.cli_name }}${{ matrix.cli_ext }}"
+          cp dist/EUT-GPT-Launcher-* builds/
 
-      - name: Upload builds (${{ runner.os }})
+      - name: Upload builds (${{ runner.os }}-${{ matrix.arch }})
         uses: actions/upload-artifact@v4
         with:
-          name: eutgpt-builds-${{ runner.os }}
+          name: eutgpt-builds-${{ runner.os }}-${{ matrix.arch }}
           path: builds/
 
   publish:

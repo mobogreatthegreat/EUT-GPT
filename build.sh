@@ -9,12 +9,9 @@ case "$OS" in
   *)       echo "[!] Unsupported OS: $OS"; exit 1 ;;
 esac
 
-CLI_OUTPUT="dist/eutgpt-cli"
-if [ "$PLATFORM" = "macos" ]; then
-  LAUNCHER_TARGET="--mac dmg"
-else
-  LAUNCHER_TARGET="--linux AppImage"
-fi
+CLI_NAME="${CLI_NAME:-eutgpt-cli}"
+CLI_OUTPUT="dist/$CLI_NAME"
+LAUNCHER_ARGS="${LAUNCHER_ARGS:-}"
 
 echo ""
 echo " --- EUT-GPT Builder ($PLATFORM) ---------------------------"
@@ -50,8 +47,8 @@ fi
 
 # ── Step 1: CLI ───────────────────────────────────────────────
 echo ""
-echo " [1/2] Building eutgpt-cli ..."
-$PYTHON -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" \
+echo " [1/2] Building $CLI_NAME ..."
+$PYTHON -m PyInstaller --noconfirm --onefile --console --name "$CLI_NAME" \
   --distpath "dist" --workpath "build" \
   --hidden-import "urllib.error" --hidden-import "urllib.request" \
   --hidden-import "http.client" --hidden-import "json" \
@@ -71,7 +68,7 @@ export CSC_LINK=
 export CSC_KEY_PASSWORD=
 
 echo " [*] Running electron-builder (this may take a while)..."
-(cd src-electron && npx electron-builder $LAUNCHER_TARGET)
+(cd src-electron && npx electron-builder $LAUNCHER_ARGS)
 
 # ── Verify ────────────────────────────────────────────────────
 echo ""

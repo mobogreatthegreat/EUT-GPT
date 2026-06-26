@@ -18,14 +18,15 @@ IF EXIST "dist-electron-temp" rmdir /s /q "dist-electron-temp" 2>nul
 
 REM ---- Step 1: CLI ----
 ECHO.
-ECHO  [1/2] Building eutgpt-cli.exe ...
-python -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" ^
+IF NOT DEFINED CLI_NAME SET "CLI_NAME=eutgpt-cli"
+ECHO  [1/2] Building %CLI_NAME% ...
+python -m PyInstaller --noconfirm --onefile --console --name "%CLI_NAME%" ^
   --distpath "dist" --workpath "build" ^
   --hidden-import "urllib.error" --hidden-import "urllib.request" ^
   --hidden-import "http.client" --hidden-import "json" ^
   --hidden-import "threading" --hidden-import "shlex" --clean "eutgpt_cli.py"
 IF %ERRORLEVEL% NEQ 0 (ECHO [!] CLI build failed & PAUSE & EXIT /B 1)
-ECHO  [+] dist\eutgpt-cli.exe
+ECHO  [+] dist\%CLI_NAME%.exe
 
 REM ---- Step 2: Electron UI (portable single exe) ----
 ECHO.
@@ -48,7 +49,7 @@ taskkill /F /IM "EUT-GPT Launcher.exe" >nul 2>&1
 REM ----- Electron builder (portable) -----
 pushd src-electron
 ECHO  [*] Running electron-builder (portable)...
-call npx electron-builder --win portable
+call npx electron-builder %LAUNCHER_ARGS%
 IF !ERRORLEVEL! NEQ 0 (
   ECHO  [!] electron-builder failed with error level !ERRORLEVEL!
   popd
