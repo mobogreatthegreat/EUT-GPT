@@ -50,15 +50,14 @@
           "filter": ["EUT-GPT-CLI-*"]
         }
       ],
-      "x64ArchFiles": "bin/EUT-GPT-CLI-*",
       "target": [
         {
           "target": "dmg",
-          "arch": ["universal"]
+          "arch": ["arm64"]
         }
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}-universal-Mac.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-${arch}-Mac.${ext}",
       "category": "public.app-category.productivity"
     },
     "linux": {

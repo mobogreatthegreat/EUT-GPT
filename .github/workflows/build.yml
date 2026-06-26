@@ -25,10 +25,10 @@ jobs:
             cli_ext: ""
             launcher_args: --linux AppImage --arm64
           - os: macos-latest
-            arch: universal
-            cli_name: EUT-GPT-CLI-1.0.2-Mac
+            arch: arm64
+            cli_name: EUT-GPT-CLI-1.0.2-arm64-Mac
             cli_ext: ""
-            launcher_args: --mac dmg --universal
+            launcher_args: --mac dmg --arm64
           - os: windows-latest
             arch: x64
             cli_name: EUT-GPT-CLI-1.0.2-x64-Win
