@@ -83,7 +83,7 @@ Both interface with the same `opencode serve` back-end, which is **auto-installe
 | **Collapsible reasoning** | Model thinking shown in expandable blocks grouped with the response |
 | **Custom frameless UI** | Clean design with centered timeline and dark themes |
 | **CLI with full command set** | `/rename`, `/export`, `/history`, model/thinking/agent controls |
-| **Cross-platform builds** | x64 + arm64 per platform — portable `.exe` (Windows), `.AppImage` (Linux), `.dmg` (macOS) |
+| **Cross-platform builds** | x64 + arm64 per platform - portable `.exe` (Windows), `.AppImage` (Linux), `.dmg` (macOS) |
 
 ---
 
@@ -146,7 +146,7 @@ Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releas
 | `EUT-GPT-Launcher-1.0.2-x64-Linux.AppImage` | Linux | x64 |
 | `EUT-GPT-Launcher-1.0.2-arm64-Linux.AppImage` | Linux | arm64 |
 
-No compilation needed — just download the file for your OS and arch and run it.
+No compilation needed - just download the file for your OS and arch and run it.
 
 > [!NOTE]
 > macOS builds are not currently available due to a known compilation issue. See [Running from Source](#running-from-source) to build from source on macOS.
