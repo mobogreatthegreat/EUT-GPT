@@ -127,6 +127,7 @@ eutgpt-app/
 │   └── renderer-old/          # Original UI backup
 ├── dist/                      # Build output (generated)
 ├── build/                     # PyInstaller workdir (generated)
+├── builds/                    # All precompiled project binaries
 └── dist-electron-temp/        # Temp electron files (generated)
 ```
 
