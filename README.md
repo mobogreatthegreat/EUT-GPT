@@ -180,6 +180,9 @@ chmod +x build.sh
 
 **Output:** `dist/EUT-GPT-Launcher-1.0.1.dmg` (macOS) or `dist/EUT-GPT-Launcher-1.0.1.AppImage` (Linux)
 
+> [!NOTE]
+> MacOS currently has a known issue with compiling and you may not be able to use it on MacOS until it is fixed. The Linux build has been confirmed to be working.
+
 > [!IMPORTANT]
 > On some systems, Windows Defender may hold a lock on extracted Electron files during Windows builds. If you encounter lock errors, temporarily exclude the project directory from Windows Defender and retry.
 
