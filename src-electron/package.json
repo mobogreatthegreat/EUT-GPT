@@ -50,7 +50,7 @@
           "filter": ["EUT-GPT-CLI-*"]
         }
       ],
-      "singleArchFiles": "bin/EUT-GPT-CLI-*",
+      "x64ArchFiles": "bin/EUT-GPT-CLI-*",
       "target": [
         {
           "target": "dmg",
