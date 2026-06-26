@@ -136,9 +136,9 @@ eutgpt-app/
 
 The easiest way to use EUT-GPT is to download a pre-built release:
 
-**Windows** - Download `EUT-GPT-Launcher-1.0.1.exe` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No compilation needed.
+**Windows / Linux** - Download `EUT-GPT-Launcher-1.0.1-Win.exe` or `EUT-GPT-Launcher-1.0.1-Linux.AppImage` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No compilation needed.
 
-**Linux / macOS** - Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
+**MacOS** - Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
 
 ---
 
