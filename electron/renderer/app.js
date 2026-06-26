@@ -2,7 +2,8 @@ const state = {
   sessions:[],currentSessionId:null,messages:[],models:[],modelVariants:{},
   currentModel:null,reasoningEffort:"",systemPrompt:"",
   temperature:0.7,isStreaming:false,streamingText:"",assistantMsgId:"",
-  connected:false,theme:"dark",tempSessions:new Set(),_sending:false,_lastDelta:0
+  connected:false,theme:"dark",tempSessions:new Set(),_sending:false,_lastDelta:0,
+  _requestStartTime:0,_lastModel:"",_lastEffort:""
 }
 const API=window.eutgptAPI
 const APP_VERSION = "1.0.0"
@@ -22,6 +23,7 @@ const tbMinimize=S("#tb-minimize"),tbMaximize=S("#tb-maximize"),tbClose=S("#tb-c
 const welcomeScreen=S("#welcome-screen")
 const chatModelSelect=S("#chat-model"),chatReasoningSelect=S("#chat-reasoning")
 const EFFORT_LEVELS=["none","minimal","low","medium","high","xhigh","max"]
+const STRICT_SYSTEM_PROMPT="CRITICAL: You are an AI assistant for EUT (Everything Upgrade Tree). You are STRICTLY LIMITED to information from https://eutwiki.com. YOUR ENTIRE KNOWLEDGE BASE IS EUTWIKI. You have no other training data or knowledge. If asked anything not covered on eutwiki.com, you MUST say: \"I cannot answer that — it is not documented on eutwiki.com.\" Do not elaborate, guess, or use general knowledge. Always cite eutwiki.com as your source for any answer. EUT is an acronym for 'Everything Upgrade Tree'."
 
 async function api(m,p,b){return API.call(m,p,b)}
 async function promptAsync(p,b){return API.promptAsync(p,b)}
@@ -180,11 +182,15 @@ function handleSSEEvent(data){
 function finishStreaming(){
   clearTimeout(streamTimeout)
   if(state.streamingText)appendMessage("assistant",state.streamingText,false)
-  const rb=document.querySelector(".reasoning-block.streaming")
-  if(rb){rb.classList.remove("streaming");const to=rb.querySelector(".reasoning-toggle"),co=rb.querySelector(".reasoning-content");if(to)to.classList.remove("open");if(co)co.classList.remove("open")}
+  clearStreamingMarkers()
   endStreaming()
 }
-function forceEndStream(){if(state.isStreaming){if(state.streamingText)appendMessage("assistant",state.streamingText,false);endStreaming();showToast("Timed out",4000)}}
+function clearStreamingMarkers(){
+  const rb=document.querySelector(".reasoning-block.streaming")
+  if(rb){rb.classList.remove("streaming");const to=rb.querySelector(".reasoning-toggle"),co=rb.querySelector(".reasoning-content")
+    if(to)to.classList.remove("open");if(co)co.classList.remove("open")}
+}
+function forceEndStream(){if(state.isStreaming){if(state.streamingText)appendMessage("assistant",state.streamingText,false);clearStreamingMarkers();endStreaming();showToast("Timed out",4000)}}
 function endStreaming(){
   clearTimeout(streamTimeout)
   state.isStreaming=false;state.streamingText="";state.assistantMsgId=""
@@ -300,7 +306,7 @@ function showWelcome(){
 }
 function appendMessage(role,content,isStreaming){
   const w=messagesContainer.querySelector(".welcome");if(w)w.remove()
-  const e=messagesContainer.querySelector(".message.streaming");if(e&&isStreaming)e.remove()
+  const e=messagesContainer.querySelector(".message.streaming");if(e)e.remove()
   const m=document.createElement("div");m.className="message "+role+(isStreaming?" streaming":"")
   const h=document.createElement("div");h.className="message-header";h.textContent=role==="user"?"You":"EUT-GPT";m.appendChild(h)
   const c=document.createElement("div");c.className="message-content"
@@ -313,12 +319,25 @@ function appendMessage(role,content,isStreaming){
 function updateStreamingMsg(text){let m=messagesContainer.querySelector(".message.streaming");if(!m){appendMessage("assistant",text,true);m=messagesContainer.querySelector(".message.streaming")}if(m){const c=m.querySelector(".message-content");if(c)c.textContent=text;scrollToBottom()}}
 function appendReasoning(text,streaming){
   let b=messagesContainer.querySelector(".reasoning-block.streaming")
-  if(!b){b=document.createElement("div");b.className="reasoning-block"+(streaming?" streaming":"");b.innerHTML='<button class="reasoning-toggle"><span class="toggle-icon">▸</span><span class="toggle-label">Thinking</span></button><div class="reasoning-content">'+(streaming?text:"")+'</div>';messagesContainer.appendChild(b);b.querySelector(".reasoning-toggle").addEventListener("click",()=>{b.querySelector(".reasoning-toggle").classList.toggle("open");b.querySelector(".reasoning-content").classList.toggle("open")});scrollToBottom()}
+  if(!b){b=document.createElement("div");b.className="reasoning-block"+(streaming?" streaming":"");b.innerHTML='<button class="reasoning-toggle"><span class="toggle-icon">▸</span><span class="toggle-label">Thinking</span></button><div class="reasoning-content">'+(streaming?text:"")+'</div>'
+    const sm=messagesContainer.querySelector(".message.streaming");const sg=sm?sm.closest(".message-group"):null
+    if(sg)messagesContainer.insertBefore(b,sg);else messagesContainer.appendChild(b)
+    b.querySelector(".reasoning-toggle").addEventListener("click",()=>{b.querySelector(".reasoning-toggle").classList.toggle("open");b.querySelector(".reasoning-content").classList.toggle("open")});scrollToBottom()}
   else{const c=b.querySelector(".reasoning-content");if(c)c.textContent=text}
 }
 function updateReasoning(text){appendReasoning(text,true)}
 function appendTool(part){}
 function scrollToBottom(){requestAnimationFrame(()=>{messagesContainer.scrollTop=messagesContainer.scrollHeight})}
+function addMessageFooter(content,elapsed){
+  const mg=messagesContainer.querySelector(".message-group:last-child")
+  if(!mg)return
+  const ef=state._lastEffort||"none",mdl=state._lastModel||"?"
+  const modelShort=mdl.includes("/")?mdl.split("/")[1]:mdl
+  const mt=document.createElement("div");mt.className="message-footer"
+  mt.innerHTML="<span class='msg-footer-model'>"+modelShort+"</span><span class='msg-footer-divider'>·</span><span class='msg-footer-effort'>"+ef+"</span><span class='msg-footer-divider'>·</span><span class='msg-footer-time'>"+elapsed+"s</span>"
+  mg.appendChild(mt)
+}
+
 
 // Send
 async function sendMessage(){
@@ -329,18 +348,23 @@ async function sendMessage(){
   appendMessage("user",text,false);state.messages.push({role:"user",content:text})
   state.isStreaming=true;state.streamingText="";state.assistantMsgId=""
   partTexts={};partTypes={};partMsgs={};reasoningParts={};toolParts={};lastDeltaTime=Date.now();updateSendBtn()
+  state._requestStartTime=Date.now()
+  state._lastModel=state.currentModel||chatModelSelect.value
+  state._lastEffort=state.reasoningEffort||"none"
   const body={parts:[{type:"text",text}]}
   if(state.systemPrompt)body.system=state.systemPrompt
   if(state.currentModel||chatModelSelect.value){
     const mn=state.currentModel||chatModelSelect.value,mp=mn.split("/")
-    if(mp.length===2){let mi=mp[1];if(state.reasoningEffort)mi+="@"+state.reasoningEffort;body.model={providerID:mp[0],modelID:mi}}
+    if(mp.length===2)body.model={providerID:mp[0],modelID:mp[1]}
   }
   try{
     const r=await promptAsync("/session/"+state.currentSessionId+"/prompt_async",body)
     if(r?.error){endStreaming();showToast("Error",4000);state._sending=false;return}
     let waited=0
     while(state.isStreaming&&waited<600){await new Promise(r=>setTimeout(r,100));waited++;if(Date.now()-lastDeltaTime>15000&&waited>50){forceEndStream();break}}
-    if(state.isStreaming){if(state.streamingText)appendMessage("assistant",state.streamingText,false);endStreaming()}
+    const elapsed=((Date.now()-state._requestStartTime)/1000).toFixed(1)
+    const lastMsg=messagesContainer.querySelector(".message-group:last-child .message.assistant .message-content")
+    if(lastMsg)addMessageFooter(lastMsg.textContent,elapsed)
     // Auto-name
     if(state.currentSessionId){const s=state.sessions.find(x=>x.id===state.currentSessionId);if(s){const def=!s.title||s.title==="New Chat"||s.title.startsWith("Temp Chat");if(def){const nt=text.slice(0,42).replace(/\s+/g," ").trim()+(text.length>42?"...":"");if(nt){await renameSession(state.currentSessionId,nt);s.title=nt;renderSessions(sessionSearch.value.trim())}}}}
   }catch(e){console.error(e);endStreaming();showToast("Connection error",4000)}
@@ -369,14 +393,27 @@ function renderModels(){
   else if(state.models.length>0){chatModelSelect.value=state.models[0];state.currentModel=state.models[0];api("PATCH","/config",{model:state.models[0]})}
   chatModelDropdown.updateOptions();updateEffort();updateSendBtn()
 }
+function getVariantForEffort(model, level){
+  if(!level||!model)return null
+  const vs=state.modelVariants[model]||[]
+  for(const v of vs){if(v.toLowerCase()===level.toLowerCase())return v}
+  for(const v of vs){if(v.toLowerCase().includes(level.toLowerCase()))return v}
+  return vs[0]||null
+}
+function hasVariantForLevel(model, level){
+  if(!level||!model)return false
+  const vs=state.modelVariants[model]||[]
+  for(const v of vs){if(v.toLowerCase()===level.toLowerCase())return true}
+  for(const v of vs){if(v.toLowerCase().includes(level.toLowerCase()))return true}
+  return false
+}
 function updateEffort(){
-  const s=chatModelSelect.value,vs=s?(state.modelVariants[s]||[]):[],valid=[]
-  EFFORT_LEVELS.forEach(l=>{if(vs.some(v=>v.toLowerCase()===l.toLowerCase()))valid.push(l)})
+  const s=chatModelSelect.value
   chatReasoningSelect.innerHTML=''
   const def=document.createElement("option");def.value="";def.textContent="None";chatReasoningSelect.appendChild(def)
-  valid.forEach(l=>{const o=document.createElement("option");o.value=l;o.textContent=l.charAt(0).toUpperCase()+l.slice(1);chatReasoningSelect.appendChild(o)})
-  if(valid.length>0&&(!chatReasoningSelect.value||!valid.includes(chatReasoningSelect.value))){chatReasoningSelect.value=valid[0];state.reasoningEffort=valid[0]}
-  else if(valid.length===0){chatReasoningSelect.value="";state.reasoningEffort=""}
+  EFFORT_LEVELS.forEach(l=>{if(hasVariantForLevel(s,l)){const o=document.createElement("option");o.value=l;o.textContent=l.charAt(0).toUpperCase()+l.slice(1);chatReasoningSelect.appendChild(o)}})
+  if(state.reasoningEffort&&EFFORT_LEVELS.includes(state.reasoningEffort)){chatReasoningSelect.value=state.reasoningEffort}
+  else if(EFFORT_LEVELS.length>0){const d=chatReasoningSelect.querySelector("option[value]");if(d){chatReasoningSelect.value=d.value;state.reasoningEffort=d.value}}
   chatReasoningDropdown.updateOptions();updateSendBtn()
 }
 chatModelSelect.addEventListener("change",()=>{state.currentModel=chatModelSelect.value;updateEffort();chatReasoningDropdown.sync();if(state.currentModel)api("PATCH","/config",{model:state.currentModel})})
@@ -406,8 +443,17 @@ async function init(){
   if(config?.model){
     const m=config.model
     if(m.includes("@")){const[b,v]=m.split("@");state.currentModel=b;state.reasoningEffort=v}else state.currentModel=m
-    if(state.currentModel&&state.models.includes(state.currentModel)){chatModelSelect.value=state.currentModel;chatModelDropdown.sync();updateEffort();if(state.reasoningEffort){chatReasoningSelect.value=state.reasoningEffort;chatReasoningDropdown.sync()}}
+    if(state.currentModel&&state.models.includes(state.currentModel)){
+      chatModelSelect.value=state.currentModel;chatModelDropdown.sync();updateEffort()
+      if(state.reasoningEffort&&EFFORT_LEVELS.includes(state.reasoningEffort)){
+        chatReasoningSelect.value=state.reasoningEffort;chatReasoningDropdown.sync()
+      }else{state.reasoningEffort=chatReasoningSelect.value}
+    }
   }
+  if(!config?.system||!config.system.includes("STRICTLY LIMITED")){
+    state.systemPrompt=STRICT_SYSTEM_PROMPT
+    await api("PATCH","/config",{system:STRICT_SYSTEM_PROMPT})
+  }else{state.systemPrompt=config.system}
   state.connected=true;updateStatus();updateSendBtn()
 }
 document.addEventListener("DOMContentLoaded",init)

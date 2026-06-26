@@ -1,6 +1,6 @@
 {
   "name": "eutgpt-launcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "EUT-GPT Launcher — Desktop UI for EUT-GPT AI",
   "author": "EUT-GPT",
   "main": "main.js",
@@ -33,7 +33,7 @@
         "nsis"
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-x32-64-Win.${ext}",
       "signAndEditExecutable": false
     },
     "nsis": {

@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/platform-win%20%7C%20mac%20%7C%20linux-purple?style=flat-square&labelColor=1a1a2e"/>
 </p>
 
-<h1 align="center">EUT-GPT Launcher</h1>
+<h1 align="center">EUT-GPT Project</h1>
 <p align="center">
   <em>A desktop interface and CLI for AI conversations powered by OpenCode, themed around the Everything Upgrade Tree wiki.</em>
   <br>
@@ -134,9 +134,9 @@ eutgpt-app/
 
 The easiest way to use EUT-GPT is to download a pre-built release:
 
-**Windows** — Download `EUT-GPT-Launcher-1.0.0.exe` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No installation needed.
+**Windows** - Download `EUT-GPT-Launcher-1.0.1.exe` from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page and run it. No compilation needed.
 
-**Linux / macOS** — Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
+**Linux / macOS** - Pre-built binaries are not currently distributed for these platforms. See [Running from Source](#running-from-source) to compile from source.
 
 ---
 
@@ -161,7 +161,7 @@ cd eutgpt-app
 build.bat
 ```
 
-**Output:** `dist/EUT-GPT-Launcher-1.0.0.exe` (portable) + `dist/eutgpt-cli.exe`
+**Output:** `dist/EUT-GPT-Launcher-1.0.1.exe` (~81 MB) + `dist/eutgpt-cli.exe`
 
 The script automatically:
 - Installs PyInstaller if missing
@@ -176,7 +176,7 @@ chmod +x build.sh
 ./build.sh
 ```
 
-**Output:** `dist/EUT-GPT-Launcher-1.0.0.dmg` (macOS) or `dist/EUT-GPT-Launcher-1.0.0.AppImage` (Linux)
+**Output:** `dist/EUT-GPT-Launcher-1.0.1.dmg` (macOS) or `dist/EUT-GPT-Launcher-1.0.1.AppImage` (Linux)
 
 > [!IMPORTANT]
 > On some systems, Windows Defender may hold a lock on extracted Electron files during Windows builds. If you encounter lock errors, temporarily exclude the project directory from Windows Defender and retry.

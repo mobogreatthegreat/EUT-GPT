@@ -20,9 +20,22 @@ echo ""
 echo " --- EUT-GPT Builder ($PLATFORM) ---------------------------"
 echo ""
 
-# ── Check dependencies ────────────────────────────────────────
-command -v python3 >/dev/null 2>&1 || { echo "[!] Python 3 not found"; exit 1; }
-python3 -c "import PyInstaller" 2>/dev/null || { echo "[*] Installing PyInstaller..."; python3 -m pip install pyinstaller --quiet; }
+# ── PYTHON VENV ───────────────────────────────────────────────
+VENV_DIR=".venv-builder"
+SYS_PYTHON="python3"
+command -v python3 >/dev/null 2>&1 || SYS_PYTHON="python"
+command -v $SYS_PYTHON >/dev/null 2>&1 || { echo "[!] Python 3 not found"; exit 1; }
+
+if [ ! -f "$VENV_DIR/bin/activate" ]; then
+  echo " [*] Creating Python virtual environment..."
+  $SYS_PYTHON -m venv "$VENV_DIR"
+fi
+source "$VENV_DIR/bin/activate"
+PYTHON="$VENV_DIR/bin/python"
+
+echo " [*] Ensuring PyInstaller is installed..."
+pip install pyinstaller --quiet 2>/dev/null || pip install pyinstaller --quiet --break-system-packages 2>/dev/null || { echo "[!] Failed to install PyInstaller"; exit 1; }
+
 command -v node >/dev/null 2>&1 || { echo "[!] Node.js not found"; exit 1; }
 
 # ── Clean ─────────────────────────────────────────────────────
@@ -38,7 +51,7 @@ fi
 # ── Step 1: CLI ───────────────────────────────────────────────
 echo ""
 echo " [1/2] Building eutgpt-cli ..."
-python3 -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" \
+$PYTHON -m PyInstaller --noconfirm --onefile --console --name "eutgpt-cli" \
   --distpath "dist" --workpath "build" \
   --hidden-import "urllib.error" --hidden-import "urllib.request" \
   --hidden-import "http.client" --hidden-import "json" \

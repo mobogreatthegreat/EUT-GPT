@@ -50,11 +50,14 @@ BASE_URL = os.environ.get(
 REASONING_LEVELS = ["none", "minimal", "low", "medium", "high", "xhigh", "max"]
 
 DEFAULT_SYSTEM_PROMPT = (
-    "You are an AI assistant that can ONLY respond using information from "
-    "https://eutwiki.com. You must not use any external knowledge, training data, "
-    "or any other sources. If the information is not available on eutwiki.com, "
-    "you must clearly state that the information is not available on eutwiki.com "
-    "rather than making up an answer. Always cite eutwiki.com as your source."
+    "CRITICAL: You are an AI assistant for EUT (Everything Upgrade Tree). "
+    "You are STRICTLY LIMITED to information from https://eutwiki.com. "
+    "YOUR ENTIRE KNOWLEDGE BASE IS EUTWIKI. You have no other training data or knowledge. "
+    "If asked anything not covered on eutwiki.com, you MUST say: "
+    "\"I cannot answer that — it is not documented on eutwiki.com.\" "
+    "Do not elaborate, guess, or use general knowledge. "
+    "Always cite eutwiki.com as your source for any answer. "
+    "EUT is an acronym for 'Everything Upgrade Tree'."
 )
 
 STATE_FILE = os.path.join(
@@ -369,8 +372,6 @@ def send_message_streaming(state: AppState, text: str, on_token: Callable[[str],
 
     if state.current_model:
         pid, mid_part = state.current_model.split("/", 1)
-        if state.current_variant:
-            mid_part = f"{mid_part}@{state.current_variant}"
         body["model"] = {"providerID": pid, "modelID": mid_part}
 
     if state.current_agent:
@@ -520,11 +521,14 @@ def _find_variant_for_effort(base_model: str, level: str) -> str | None:
     for m in models:
         label = f"{m['provider']}/{m['model']}"
         if label == base_model:
-            if level in m["variants"]:
-                return level
             for v in m["variants"]:
-                if level in v:
+                if v.lower() == level.lower():
                     return v
+            for v in m["variants"]:
+                if level.lower() in v.lower():
+                    return v
+            if m["variants"]:
+                return list(m["variants"].keys())[0]
             return None
     return None
 
@@ -586,7 +590,6 @@ def cmd_system(state: AppState, args: list[str]) -> None:
             print(f"  {state.system_prompt}")
         else:
             print("  No system prompt set. Provide text to set one.")
-            print("  Example: /system You are a helpful coding assistant.")
         return
 
     text = " ".join(args)
