@@ -88,6 +88,8 @@ jobs:
           path: builds/
 
       - name: Commit and push builds/ (via LFS)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

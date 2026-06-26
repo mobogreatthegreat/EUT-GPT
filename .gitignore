@@ -1,5 +1,5 @@
 # Dependencies
-node_modules/
+src-electron/node_modules/
 
 # Build outputs
 dist/

@@ -43,9 +43,9 @@ echo " [*] Cleaning previous builds..."
 rm -rf dist build dist-electron-temp
 
 # ── Install npm deps if needed ────────────────────────────────
-if [ ! -f "node_modules/.package-lock.json" ]; then
+if [ ! -f "src-electron/node_modules/.package-lock.json" ]; then
   echo " [*] Installing npm dependencies..."
-  npm install
+  (cd src-electron && npm install)
 fi
 
 # ── Step 1: CLI ───────────────────────────────────────────────
@@ -71,7 +71,7 @@ export CSC_LINK=
 export CSC_KEY_PASSWORD=
 
 echo " [*] Running electron-builder (this may take a while)..."
-npx electron-builder $LAUNCHER_TARGET
+(cd src-electron && npx electron-builder $LAUNCHER_TARGET)
 
 # ── Verify ────────────────────────────────────────────────────
 echo ""
