@@ -137,14 +137,13 @@ eutgpt-app/
 
 The easiest way to use EUT-GPT is to download a pre-built release:
 
-Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page. Each release includes 6 architecture-specific files:
+Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page. Each release includes 5 architecture-specific files:
 
 | File | Platform | Arch |
 |------|----------|------|
 | `EUT-GPT-Launcher-1.0.2-x64-Win.exe` | Windows | x64 |
 | `EUT-GPT-Launcher-1.0.2-arm64-Win.exe` | Windows | arm64 |
-| `EUT-GPT-Launcher-1.0.2-x64-Mac.dmg` | macOS | x64 (Intel) |
-| `EUT-GPT-Launcher-1.0.2-arm64-Mac.dmg` | macOS | arm64 (Apple Silicon) |
+| `EUT-GPT-Launcher-1.0.2-universal-Mac.dmg` | macOS | universal (Intel + Apple Silicon) |
 | `EUT-GPT-Launcher-1.0.2-x64-Linux.AppImage` | Linux | x64 |
 | `EUT-GPT-Launcher-1.0.2-arm64-Linux.AppImage` | Linux | arm64 |
 
@@ -184,19 +183,11 @@ LAUNCHER_ARGS="--linux AppImage --x64" \
 ./build.sh
 ```
 
-**macOS (Intel):**
+**macOS (universal):**
 ```bash
 cd eutgpt-app
-CLI_NAME=EUT-GPT-CLI-1.0.2-x64-Mac \
-LAUNCHER_ARGS="--mac dmg --x64" \
-./build.sh
-```
-
-**macOS (Apple Silicon):**
-```bash
-cd eutgpt-app
-CLI_NAME=EUT-GPT-CLI-1.0.2-arm64-Mac \
-LAUNCHER_ARGS="--mac dmg --arm64" \
+CLI_NAME=EUT-GPT-CLI-1.0.2-Mac \
+LAUNCHER_ARGS="--mac dmg --universal" \
 ./build.sh
 ```
 

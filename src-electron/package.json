@@ -51,10 +51,13 @@
         }
       ],
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
       ],
       "icon": "icon.png",
-      "artifactName": "EUT-GPT-Launcher-${version}-${arch}-Mac.${ext}",
+      "artifactName": "EUT-GPT-Launcher-${version}-universal-Mac.${ext}",
       "category": "public.app-category.productivity"
     },
     "linux": {
