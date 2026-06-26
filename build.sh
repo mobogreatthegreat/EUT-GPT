@@ -71,7 +71,7 @@ export CSC_LINK=
 export CSC_KEY_PASSWORD=
 
 echo " [*] Running electron-builder (this may take a while)..."
-npx --prefix electron electron-builder --config electron/package.json $LAUNCHER_TARGET
+npx --prefix electron electron-builder --project electron $LAUNCHER_TARGET
 
 # ── Verify ────────────────────────────────────────────────────
 echo ""
