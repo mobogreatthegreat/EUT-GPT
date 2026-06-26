@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -61,8 +64,36 @@ jobs:
           cp "dist/${{ matrix.cli_src }}" "builds/${{ matrix.cli_out }}"
           cp dist/${{ matrix.launcher_pat }} builds/
 
-      - name: Upload all builds
+      - name: Upload builds (${{ runner.os }})
         uses: actions/upload-artifact@v4
         with:
-          name: eutgpt-builds
+          name: eutgpt-builds-${{ runner.os }}
           path: builds/
+
+  publish:
+    needs: [build]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all platform builds
+        uses: actions/download-artifact@v4
+        with:
+          pattern: eutgpt-builds-*
+          merge-multiple: true
+          path: builds/
+
+      - name: Commit and push builds/
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add builds/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update builds [skip ci]"
+            git push
+          fi

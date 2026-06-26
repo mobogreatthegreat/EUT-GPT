@@ -206,7 +206,7 @@ chmod +x build.sh
 | `qubits` | Qubits Baseplate | `#07c492` |
 | `transcend` | Transcend Baseplate | `#65f0ff` |
 
-Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `electron/renderer/style.css` using CSS custom properties.
+Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `src-electron/renderer/style.css` using CSS custom properties.
 
 ### Server URL
 
@@ -326,7 +326,7 @@ If you encounter a bug, please [open an issue](https://github.com/mobogreatthegr
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Test your changes:
-   - For UI changes: run `npm start` from `electron/`
+   - For UI changes: run `npm start` from `src-electron/`
    - For CLI changes: run `python eutgpt_cli.py` while `opencode serve` is running
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)

@@ -32,9 +32,9 @@ ECHO.
 ECHO  [2/2] Building EUT-GPT Launcher (portable) ...
 
 REM ----- Install npm dependencies if needed -----
-IF NOT EXIST "electron\node_modules\.package-lock.json" (
+IF NOT EXIST "src-electron\node_modules\.package-lock.json" (
   ECHO  [*] Installing npm dependencies...
-  pushd electron
+  pushd src-electron
   call npm install
   popd
   IF !ERRORLEVEL! NEQ 0 (ECHO [!] npm install failed & PAUSE & EXIT /B 1)
@@ -46,7 +46,7 @@ taskkill /F /IM electron.exe >nul 2>&1
 taskkill /F /IM "EUT-GPT Launcher.exe" >nul 2>&1
 
 REM ----- Electron builder (portable) -----
-pushd electron
+pushd src-electron
 ECHO  [*] Running electron-builder (portable)...
 call npx electron-builder --win portable
 IF !ERRORLEVEL! NEQ 0 (
