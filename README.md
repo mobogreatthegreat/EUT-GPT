@@ -137,17 +137,19 @@ eutgpt-app/
 
 The easiest way to use EUT-GPT is to download a pre-built release:
 
-Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page. Each release includes 5 architecture-specific files:
+Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releases) page. Each release includes 4 architecture-specific files:
 
 | File | Platform | Arch |
 |------|----------|------|
 | `EUT-GPT-Launcher-1.0.2-x64-Win.exe` | Windows | x64 |
 | `EUT-GPT-Launcher-1.0.2-arm64-Win.exe` | Windows | arm64 |
-| `EUT-GPT-Launcher-1.0.2-arm64-Mac.dmg` | macOS | arm64 (Apple Silicon) |
 | `EUT-GPT-Launcher-1.0.2-x64-Linux.AppImage` | Linux | x64 |
 | `EUT-GPT-Launcher-1.0.2-arm64-Linux.AppImage` | Linux | arm64 |
 
 No compilation needed — just download the file for your OS and arch and run it.
+
+> [!NOTE]
+> macOS builds are not currently available due to a known compilation issue. See [Running from Source](#running-from-source) to build from source on macOS.
 
 ---
 
@@ -183,13 +185,7 @@ LAUNCHER_ARGS="--linux AppImage --x64" \
 ./build.sh
 ```
 
-**macOS (arm64):**
-```bash
-cd eutgpt-app
-CLI_NAME=EUT-GPT-CLI-1.0.2-arm64-Mac \
-LAUNCHER_ARGS="--mac dmg --arm64" \
-./build.sh
-```
+
 
 Each script automatically:
 - Installs PyInstaller if missing
