@@ -80,6 +80,7 @@ jobs:
 
       - name: Collect artifacts into builds/
         run: |
+          rm -rf builds
           mkdir -p builds
           cp "dist/${{ matrix.cli_name }}${{ matrix.cli_ext }}" "builds/${{ matrix.cli_name }}${{ matrix.cli_ext }}"
           cp dist/EUT-GPT-Launcher-* builds/
