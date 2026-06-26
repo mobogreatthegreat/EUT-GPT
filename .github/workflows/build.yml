@@ -89,6 +89,8 @@ jobs:
 
       - name: Commit and push builds/ (via LFS)
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git lfs install
           git lfs track "builds/**"
           git add builds/ .gitattributes

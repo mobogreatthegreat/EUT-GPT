@@ -109,22 +109,18 @@ When you launch the EUT-GPT desktop app for the first time, the following happen
 ```
 eutgpt-app/
 ├── eutgpt_cli.py              # Python CLI entry point
-├── eutgpt-cli.spec            # PyInstaller spec (auto-generated)
+├── main.js                    # Electron main process
+├── preload.js                 # Context bridge (IPC API)
+├── package.json               # Electron dependencies & builder config
+├── node_modules/              # Installed via npm install
+├── renderer/
+│   ├── index.html             # UI layout
+│   ├── style.css              # 12-theme CSS variable system
+│   └── app.js                 # Frontend logic
 ├── build.bat                  # Windows build script
 ├── build.sh                   # Linux/macOS build script
-├── cert.pfx                   # Self-signed code signing cert (auto-generated)
 ├── .gitignore
 ├── README.md
-├── electron/
-│   ├── main.js                # Electron main process
-│   ├── preload.js             # Context bridge (IPC API)
-│   ├── package.json           # Electron dependencies & builder config
-│   ├── node_modules/          # Installed via npm install
-│   ├── renderer/
-│   │   ├── index.html         # UI layout
-│   │   ├── style.css          # 12-theme CSS variable system
-│   │   └── app.js             # Frontend logic
-│   └── renderer-old/          # Original UI backup
 ├── dist/                      # Build output (generated)
 ├── build/                     # PyInstaller workdir (generated)
 └── dist-electron-temp/        # Temp electron files (generated)
@@ -206,7 +202,7 @@ chmod +x build.sh
 | `qubits` | Qubits Baseplate | `#07c492` |
 | `transcend` | Transcend Baseplate | `#65f0ff` |
 
-Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `src-electron/renderer/style.css` using CSS custom properties.
+Themes are persisted to `localStorage` under the key `eutgpt-theme`. Change themes in **Settings > Theme**. Each theme is defined as a `[data-theme="..."]` CSS block in `renderer/style.css` using CSS custom properties.
 
 ### Server URL
 
@@ -326,7 +322,7 @@ If you encounter a bug, please [open an issue](https://github.com/mobogreatthegr
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Test your changes:
-   - For UI changes: run `npm start` from `src-electron/`
+   - For UI changes: run `npm start`
    - For CLI changes: run `python eutgpt_cli.py` while `opencode serve` is running
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)

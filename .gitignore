@@ -1,6 +1,5 @@
 # Dependencies
-src-electron/node_modules/
-src-electron/renderer-old/
+node_modules/
 
 # Build outputs
 dist/
