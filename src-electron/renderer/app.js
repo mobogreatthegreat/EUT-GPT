@@ -6,7 +6,7 @@ const state = {
   _requestStartTime:0,_lastModel:"",_lastEffort:""
 }
 const API=window.eutgptAPI
-const APP_VERSION = "1.0.0"
+const APP_VERSION = "1.0.3"
 const $=s=>document.querySelector(s)
 const S=s=>document.querySelector(s)
 const sessionList=S("#session-list"),sessionSearch=S("#session-search")

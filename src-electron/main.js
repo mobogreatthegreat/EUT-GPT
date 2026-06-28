@@ -6,7 +6,7 @@ const https = require("https");
 const { spawn, execSync } = require("child_process");
 
 const DEFAULT_PORT = 4096;
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.0.3";
 const OPENCODE_DIR = path.join(os.homedir(), ".opencode", "bin");
 let serverUrl = `http://127.0.0.1:${DEFAULT_PORT}`;
 let serverProcess = null;
@@ -28,10 +28,12 @@ function isToolInstalled(name) {
 
 function installOpencodeWindows() {
   try {
-    execSync(
-      'powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString(\'https://opencode.ai/install\'))"',
-      { stdio: "inherit", timeout: 120000 }
-    );
+    try {
+      execSync("choco --version", { stdio: "ignore", timeout: 10000 });
+    } catch {
+      execSync("winget install Chocolatey --accept-source-agreements", { stdio: "inherit", timeout: 120000 });
+    }
+    execSync("choco install opencode -y", { stdio: "inherit", timeout: 120000 });
     return true;
   } catch { return false; }
 }
