@@ -16,23 +16,23 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: x64
-            cli_name: EUT-GPT-CLI-1.0.2-x64-Linux
+            cli_name: EUT-GPT-CLI-1.0.3-x64-Linux
             cli_ext: ""
             launcher_args: --linux AppImage --x64
           - os: ubuntu-latest
             arch: arm64
-            cli_name: EUT-GPT-CLI-1.0.2-arm64-Linux
+            cli_name: EUT-GPT-CLI-1.0.3-arm64-Linux
             cli_ext: ""
             launcher_args: --linux AppImage --arm64
 
           - os: windows-latest
             arch: x64
-            cli_name: EUT-GPT-CLI-1.0.2-x64-Win
+            cli_name: EUT-GPT-CLI-1.0.3-x64-Win
             cli_ext: .exe
             launcher_args: --win portable --x64
           - os: windows-latest
             arch: arm64
-            cli_name: EUT-GPT-CLI-1.0.2-arm64-Win
+            cli_name: EUT-GPT-CLI-1.0.3-arm64-Win
             cli_ext: .exe
             launcher_args: --win portable --arm64
 
