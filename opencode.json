@@ -1,0 +1,89 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "question": "deny",
+    "external_directory": "deny",
+    "read": {
+      "**": "allow",
+      "**/*.env": "deny",
+      "**/*.env.*": "deny",
+      "**/.env.example": "allow",
+      "**/opencode.json": "allow",
+      "**/opencode.jsonc": "allow",
+      "**/.opencode/**": "allow",
+      "**/AGENTS.md": "allow",
+      "C:\\*": "deny",
+      "D:\\*": "deny",
+      "C:\\Users\\*\\AppData\\**": "deny",
+      "C:\\Windows\\**": "deny",
+      "C:\\Program Files\\**": "deny",
+      "C:\\Program Files (x86)\\**": "deny",
+      "C:\\Users\\*\\*": "deny",
+      "C:\\Users\\*\\Documents\\EUT\\EUTGPT\\eutgpt-app\\**": "allow"
+    },
+    "bash": {
+      "git*": "allow",
+      "npm*": "allow",
+      "node*": "allow",
+      "npx*": "allow",
+      "python*": "allow",
+      "pip*": "allow",
+      "dir*": "allow",
+      "ls*": "allow",
+      "cd*": "allow",
+      "echo*": "allow",
+      "type*": "allow",
+      "cat*": "allow",
+      "Get-ChildItem*": "allow",
+      "Set-Location*": "allow",
+      "Write-Output*": "allow",
+      "mkdir*": "allow",
+      "New-Item*": "allow",
+      "Remove-Item*": "ask",
+      "del*": "ask",
+      "rm*": "ask",
+      "curl*": "allow",
+      "wget*": "allow",
+      "Invoke-WebRequest*": "allow",
+      "opencode*": "deny",
+      "start*": "deny",
+      "cmd*": "deny",
+      "powershell*": "deny",
+      "reg*": "deny",
+      "schtasks*": "deny",
+      "net*": "deny",
+      "sc*": "deny",
+      "wmic*": "deny",
+      "msiexec*": "deny",
+      "$env:*": "deny",
+      "*": "ask"
+    },
+    "edit": {
+      "**": "allow",
+      "C:\\*": "deny",
+      "D:\\*": "deny"
+    },
+    "write": {
+      "**": "allow",
+      "C:\\*": "deny",
+      "D:\\*": "deny"
+    },
+    "glob": {
+      "**": "allow",
+      "C:\\*": "deny",
+      "D:\\*": "deny",
+      "C:\\Users\\*\\AppData\\**": "deny",
+      "C:\\Windows\\**": "deny"
+    },
+    "grep": {
+      "**": "allow",
+      "C:\\*": "deny",
+      "D:\\*": "deny",
+      "C:\\Users\\*\\AppData\\**": "deny",
+      "C:\\Windows\\**": "deny"
+    },
+    "webfetch": "allow",
+    "websearch": "allow",
+    "doom_loop": "deny"
+  }
+}

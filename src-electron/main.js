@@ -6,7 +6,7 @@ const https = require("https");
 const { spawn, execSync } = require("child_process");
 
 const DEFAULT_PORT = 4096;
-const APP_VERSION = "1.0.3";
+const APP_VERSION = "1.0.4";
 const OPENCODE_DIR = path.join(os.homedir(), ".opencode", "bin");
 let serverUrl = `http://127.0.0.1:${DEFAULT_PORT}`;
 let serverProcess = null;
@@ -80,8 +80,10 @@ async function startServer(port) {
   return new Promise((resolve) => {
     const opencodeBin = path.join(OPENCODE_DIR, process.platform === "win32" ? "opencode.exe" : "opencode");
     const cmd = require("fs").existsSync(opencodeBin) ? opencodeBin : "opencode";
+    const projectRoot = path.resolve(__dirname, "..");
     const proc = spawn(cmd, ["serve", "--port", String(port)], {
       stdio: "ignore", shell: true, windowsHide: true,
+      cwd: projectRoot,
     });
     proc.on("error", () => resolve(null));
     proc.on("exit", () => { if (serverProcess === proc) serverProcess = null; });
@@ -178,7 +180,16 @@ function startSSE(win) {
         if (line.startsWith("data:")) {
           try {
             const data = JSON.parse(line.slice(5));
-            if (!win.isDestroyed()) win.webContents.send("sse-event", data);
+            if (!win.isDestroyed()) {
+              const t = data.type, p = data.properties || {};
+              if (t === "question.asked" && p.requestID) {
+                api("POST", `/question/${p.requestID}/reject`).catch(() => {});
+              }
+              if (t === "permission.asked" && p.requestID) {
+                api("POST", `/permission/${p.requestID}/reply`, { reply: "reject" }).catch(() => {});
+              }
+              win.webContents.send("sse-event", data);
+            }
           } catch {}
         }
       }

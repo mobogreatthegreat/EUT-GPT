@@ -33,8 +33,8 @@
 - [Running App](#running-app)
 - [Running from Source](#running-from-source)
   - [Prerequisites](#prerequisites)
-  - [Windows Build](#windows-build)
-  - [Linux / macOS Build](#linux--macos-build)
+  - [Build Scripts](#build-scripts)
+  - [Running on MacOS](#running-on-macos)
 - [First Run Behavior](#first-run-behavior)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
@@ -185,8 +185,6 @@ LAUNCHER_ARGS="--linux AppImage --x64" \
 ./build.sh
 ```
 
-
-
 Each script automatically:
 - Installs PyInstaller if missing
 - Compiles the CLI into `dist/`
@@ -194,6 +192,14 @@ Each script automatically:
 
 > [!IMPORTANT]
 > On some systems, Windows Defender may hold a lock on extracted Electron files during Windows builds. If you encounter lock errors, temporarily exclude the project directory from Windows Defender and retry.
+
+### Running on MacOS
+
+```bash
+cd eutgpt-app/src-electron
+npm install
+npm start
+```
 
 ---
 
