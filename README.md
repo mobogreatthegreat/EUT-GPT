@@ -149,7 +149,7 @@ Download from the [Releases](https://github.com/mobogreatthegreat/EUT-GPT/releas
 No compilation needed - just download the file for your OS and arch and run it.
 
 > [!NOTE]
-> macOS builds are not currently available due to a known compilation issue. See [Running from Source](#running-from-source) to build from source on macOS.
+> macOS builds are not currently available due to a known compilation issue. See [Running from Source](#running-from-source) to build from source on macOS although it probably won't work.
 
 ---
 
